@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, ImageOverlay, Marker, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Phone, X, Edit3, Copy, Check, RotateCcw, MapPin } from 'lucide-react';
+import { Phone, X, Edit3, Copy, Check, RotateCcw, MapPin, Sparkles } from 'lucide-react';
 
 /* ═══════════════════════════════════════════════════════════════════════════════
    CONSTANTS & COLOR PALETTE
@@ -350,6 +350,377 @@ function MapClickHandler({
     },
   });
   return null;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   CURATED LUXURY IMAGES & HIGHLIGHTS FOR AMENITY DRAWER
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+const DEFAULT_FALLBACK_IMAGE =
+  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80';
+const DEFAULT_HIGHLIGHTS = [
+  'Panoramic Ocean Views',
+  'Dedicated Concierge Service',
+  'Private Resort Access',
+  'Complimentary Electric Buggy',
+];
+
+const AMENITY_DETAILS: Record<
+  string,
+  { image: string; highlights: string[] }
+> = {
+  reception: {
+    image: 'https://images.unsplash.com/photo-1588598198321-9735fd52455b?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['24/7 Dedicated Concierge', 'Electric Buggy Dispatch', 'Valet & Luggage Service', 'Curated Excursions'],
+  },
+  'sanctuary-spa': {
+    image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['Ayurvedic Herbal Baths', 'Ocean-Breeze Shaded Shala', 'Bespoke Essential Blends', 'Yoga & Meditation Masters'],
+  },
+  'moon-pool': {
+    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['60m Cliff-Edge Infinity', 'Chilled Towel & Mist Service', 'Private Sunbed Attendants', 'Panoramic Sunset Facing'],
+  },
+  'surf-bar': {
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['Handcrafted Beach Cocktails', 'Cold-Pressed Tropical Juices', 'Direct Surf Access Deck', 'Acoustic Sunset Sessions'],
+  },
+  gym: {
+    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['Ocean-Facing Cardio Deck', 'Private Fitness Coaching', 'Open-Air Stretching Lawn', 'Infused Water & Towels'],
+  },
+  'main-square': {
+    image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['Central Resort Piazza', 'Shaded Coconut Grove Paths', 'Heritage Water Features', 'Buggy Crossroads Hub'],
+  },
+  'cape-shop': {
+    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['Artisan Ceylon Silks', 'Handmade Silver Jewelry', 'Dilmah Single-Estate Teas', 'Eco Resort Wear'],
+  },
+  'pola-restaurant': {
+    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['Clay Pot Curry Traditions', 'Fire-Roasted Coconut Sambol', 'Open Market Style Dining', 'Organic Garden Spices'],
+  },
+  'ocean-terrace': {
+    image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['Daily Fisherman Catch', 'Curated Sommelier Cellar', 'Clifftop Candlelight Tables', 'Fresh Herb Infusions'],
+  },
+  tableau: {
+    image: 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['7-Course Degustation', 'Private Executive Chef Table', 'Intimate 12-Seat Setting', 'Vintage Champagne Pairings'],
+  },
+  'cape-club': {
+    image: 'https://images.unsplash.com/photo-1510414842564-598c451152ad?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['Ceylon High Tea Rituals', 'Single Malt & Cigar Lounge', 'Stargazing Telescope Deck', '270° Ocean Horizon'],
+  },
+  'cove-pool': {
+    image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['Secluded Family Sanctuary', 'Gentle Shallow Waters', 'Poolside Lunch Service', 'Surrounded by Frangipani'],
+  },
+  'east-beach-gate': {
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['Private Beach Access Gate', 'PADI Dive & Snorkel Center', 'Stand-Up Paddleboards', 'Guided Coastal Kayaking'],
+  },
+  'cliff-edge-walkway': {
+    image: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['Dramatically Elevated Trail', 'Crashing Surf Vista Points', 'Indigenous Flora Markers', 'Sunset Photography Path'],
+  },
+  'west-beach-stairs': {
+    image: 'https://images.unsplash.com/photo-1510414842564-598c451152ad?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['Carved Stone Staircase', 'Access to Secluded Cove', 'Golden Hour Rock Pools', 'Tide Watch Recommendations'],
+  },
+  'lookout-fin': {
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['Ocean Sunfish Viewpoint', 'Elevated Photographic Deck', 'Sea Turtle Spotting', 'Unobstructed Western Sunsets'],
+  },
+  'lookout-minke': {
+    image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['Blue Whale Migration Post', 'Complimentary Binoculars', 'Resident Naturalist Briefings', 'Southern Ocean Breezes'],
+  },
+  'lookout-blue': {
+    image: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['Southernmost Cape Point', 'Endless 270° Ocean Arch', 'Star & Moon Gazing Terrace', 'Sunrise to Sunset Panorama'],
+  },
+};
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   NATIVE iOS-STYLE SWIPE-TO-DISMISS DRAWER COMPONENT
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+interface SelectedPinDrawerProps {
+  selected: ResortAmenity;
+  onClose: () => void;
+}
+
+function SelectedPinDrawer({ selected, onClose }: SelectedPinDrawerProps) {
+  const [translateY, setTranslateY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  const startYRef = useRef<number>(0);
+  const currentYRef = useRef<number>(0);
+  const lastTimeRef = useRef<number>(0);
+  const velocityRef = useRef<number>(0);
+  const isDirectDragRef = useRef<boolean>(false);
+
+  // Close on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleTriggerClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const handleTriggerClose = () => {
+    setIsClosing(true);
+    setTranslateY(typeof window !== 'undefined' ? window.innerHeight : 600);
+    setTimeout(() => {
+      onClose();
+    }, 220);
+  };
+
+  // Touch handlers for native iOS swipe physics
+  const handleTouchStart = (e: React.TouchEvent, isFromHeaderOrHandle: boolean) => {
+    e.stopPropagation();
+    const touch = e.touches[0];
+    startYRef.current = touch.clientY;
+    currentYRef.current = touch.clientY;
+    lastTimeRef.current = Date.now();
+    velocityRef.current = 0;
+    isDirectDragRef.current = isFromHeaderOrHandle;
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    e.stopPropagation();
+    const touch = e.touches[0];
+    const currentY = touch.clientY;
+    const deltaY = currentY - startYRef.current;
+
+    // Track drag velocity
+    const now = Date.now();
+    const dt = now - lastTimeRef.current;
+    if (dt > 0) {
+      velocityRef.current = (currentY - currentYRef.current) / dt;
+    }
+    lastTimeRef.current = now;
+    currentYRef.current = currentY;
+
+    // Check scroll position of internal content
+    const scrollTop = contentRef.current ? contentRef.current.scrollTop : 0;
+
+    if (isDirectDragRef.current) {
+      // Direct drag on header or handle: moves card immediately
+      if (deltaY > 0) {
+        setTranslateY(deltaY);
+      } else {
+        // Elastic rubber-band resistance when pulled up
+        setTranslateY(deltaY * 0.15);
+      }
+    } else {
+      // Dragging inside scrollable content area:
+      // Only drag down if content is at top (scrollTop <= 0) and dragging downwards
+      if (scrollTop <= 0 && deltaY > 0) {
+        setTranslateY(deltaY);
+      } else {
+        setTranslateY(0);
+      }
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.stopPropagation();
+    setIsDragging(false);
+
+    // Dismiss threshold: dragged down > 90px OR downward flick with velocity
+    const shouldDismiss =
+      translateY > 90 || (velocityRef.current > 0.45 && translateY > 25);
+
+    if (shouldDismiss) {
+      handleTriggerClose();
+    } else {
+      // Spring back cleanly to translateY(0)
+      setTranslateY(0);
+    }
+  };
+
+  // Desktop mouse drag support on grab handle
+  const handleMouseDownHandle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const startY = e.clientY;
+    setIsDragging(true);
+
+    const onMouseMove = (moveEvent: MouseEvent) => {
+      const deltaY = moveEvent.clientY - startY;
+      if (deltaY > 0) {
+        setTranslateY(deltaY);
+      }
+    };
+
+    const onMouseUp = (upEvent: MouseEvent) => {
+      setIsDragging(false);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      const deltaY = upEvent.clientY - startY;
+      if (deltaY > 90) {
+        handleTriggerClose();
+      } else {
+        setTranslateY(0);
+      }
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+  };
+
+  const details = AMENITY_DETAILS[selected.id] || {
+    image: DEFAULT_FALLBACK_IMAGE,
+    highlights: DEFAULT_HIGHLIGHTS,
+  };
+
+  const backdropOpacity = isClosing
+    ? 0
+    : Math.max(0, 1 - Math.min(translateY / 240, 1));
+
+  return (
+    <>
+      {/* Smooth backdrop overlay */}
+      <div
+        className="fixed inset-0 z-[1999] bg-black/30 backdrop-blur-[2px] transition-opacity"
+        style={{
+          opacity: backdropOpacity,
+          pointerEvents: isClosing ? 'none' : 'auto',
+          transition: isDragging ? 'none' : 'opacity 0.22s ease-out',
+        }}
+        onClick={handleTriggerClose}
+      />
+
+      {/* Card container */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={selected.title}
+        className="fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-white/95 backdrop-blur-2xl border-t border-x border-stone-200/80 rounded-t-[28px] shadow-[0_-15px_40px_rgba(0,0,0,0.18)] z-[2000] p-6 pb-[max(2rem,env(safe-area-inset-bottom))] flex flex-col will-change-transform"
+        style={{
+          transform: `translate3d(0, ${Math.max(0, translateY)}px, 0)`,
+          opacity: isClosing ? 0 : 1,
+          transition: isDragging
+            ? 'none'
+            : 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease-out',
+          touchAction: isDragging ? 'none' : 'pan-y',
+        }}
+        onMouseDown={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* Grab Handle Header Bar */}
+        <div
+          className="w-full flex flex-col items-center select-none pt-0 pb-1 cursor-grab active:cursor-grabbing"
+          onMouseDown={handleMouseDownHandle}
+          onTouchStart={(e) => handleTouchStart(e, true)}
+        >
+          {/* Centered 40px wide, 4px high pill with bg-stone-300 rounded-full my-2.5 cursor-grab active:cursor-grabbing */}
+          <div className="w-10 h-1 bg-stone-300 rounded-full my-2.5 cursor-grab active:cursor-grabbing hover:bg-stone-400 transition" />
+
+          {/* Header row */}
+          <div className="w-full flex items-center justify-between gap-3 pt-1">
+            <div className="flex items-center gap-3 min-w-0">
+              <span
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-xs"
+                style={{ background: CATEGORY_COLORS[selected.category] }}
+              >
+                {selected.num}
+              </span>
+              <div className="min-w-0">
+                <span className="text-[9.5px] sm:text-[10px] tracking-widest uppercase font-bold text-stone-500 bg-stone-100 px-2.5 py-0.5 rounded-full border border-stone-200">
+                  {selected.category}
+                </span>
+                <h3 className="text-base sm:text-lg font-serif font-bold text-stone-900 mt-0.5 truncate">
+                  {selected.title}
+                </h3>
+              </div>
+            </div>
+
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={handleTriggerClose}
+              className="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-stone-800 flex items-center justify-center transition active:scale-90 cursor-pointer shrink-0 -mr-1"
+              aria-label="Close sheet"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Scrollable Content Container: max-h-[65dvh] overflow-y-auto overscroll-contain */}
+        <div
+          ref={contentRef}
+          className="max-h-[65dvh] overflow-y-auto overscroll-contain pr-1 mt-2.5 space-y-4 no-scrollbar"
+          onTouchStart={(e) => handleTouchStart(e, false)}
+        >
+          {/* High-res Amenity Image */}
+          <div className="relative w-full aspect-video sm:aspect-21/9 rounded-2xl overflow-hidden bg-stone-100 shadow-inner">
+            <img
+              src={details.image}
+              alt={selected.title}
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute bottom-2.5 left-3 flex items-center gap-1.5 text-white text-[10px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20">
+              <Sparkles className="w-3 h-3 text-[#C5A880]" />
+              <span>Cape Weligama Pavilions</span>
+            </div>
+          </div>
+
+          {/* Full Luxury Description */}
+          <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-light">
+            {selected.description}
+          </p>
+
+          {/* Pavilion Highlights & Amenities List */}
+          <div className="space-y-2 pt-2 border-t border-stone-100">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">
+              Pavilion Highlights &amp; Amenities
+            </span>
+            <div className="grid grid-cols-2 gap-2 pt-0.5">
+              {details.highlights.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center gap-1.5 bg-stone-50 border border-stone-200/60 rounded-xl px-2.5 py-2 text-[11px] text-stone-700 font-medium"
+                >
+                  <span
+                    className="w-1.5 h-1.5 rounded-full shrink-0"
+                    style={{ background: CATEGORY_COLORS[selected.category] }}
+                  />
+                  <span className="truncate">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Primary WhatsApp Action Button */}
+          <div className="pt-2 sticky bottom-0 bg-gradient-to-t from-white/95 via-white/90 to-transparent pb-1">
+            <a
+              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(selected.whatsAppMessage)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="apple-bounce w-full flex items-center justify-center gap-2 bg-stone-900 hover:bg-stone-800 active:scale-[0.94] text-white text-xs sm:text-sm font-semibold py-3.5 rounded-2xl shadow-xl transition-all duration-150 min-h-[48px] cursor-pointer"
+            >
+              <Phone className="w-4 h-4" />
+              <span>{selected.actionText}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
@@ -702,72 +1073,13 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
         </div>
       )}
 
-      {/* ── GUEST BOTTOM SHEET (Frosted glass, iOS spring physics) ───────── */}
+      {/* ── GUEST BOTTOM SHEET DRAWER (iOS Swipe-to-Dismiss & Content Scroll) ─ */}
       {!isEditorOpen && selected && (
-        <>
-          {/* Subtle mobile backdrop */}
-          <div
-            className="fixed inset-0 z-[990] bg-black/25 backdrop-blur-[2px] transition-opacity animate-in fade-in duration-200"
-            onClick={() => setSelected(null)}
-          />
-
-          <div
-            className="fixed bottom-0 sm:bottom-6 left-0 right-0 sm:left-1/2 sm:-translate-x-1/2 sm:max-w-md w-full z-[1000] ios-spring-sheet pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:pb-0 px-0 sm:px-4"
-            onMouseDown={(e) => e.stopPropagation()}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="bg-white/95 backdrop-blur-2xl p-5 sm:p-6 rounded-t-3xl sm:rounded-3xl shadow-[0_-12px_40px_rgba(0,0,0,0.18)] sm:shadow-[0_20px_50px_rgba(0,0,0,0.2)] border-t sm:border border-white/60">
-              {/* iOS Grab Handle */}
-              <div
-                className="w-12 h-1.5 bg-stone-300/80 rounded-full mx-auto mb-3.5 cursor-pointer active:bg-stone-400 transition"
-                onClick={() => setSelected(null)}
-              />
-
-              {/* Header */}
-              <div className="flex justify-between items-start mb-2.5">
-                <div className="flex items-center gap-3">
-                  <span
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-xs"
-                    style={{ background: CATEGORY_COLORS[selected.category] }}
-                  >
-                    {selected.num}
-                  </span>
-                  <div>
-                    <span className="text-[9.5px] sm:text-[10px] tracking-widest uppercase font-bold text-stone-500 bg-stone-100 px-2.5 py-0.5 rounded-full border border-stone-200">
-                      {selected.category}
-                    </span>
-                    <h3 className="text-base sm:text-lg font-serif font-bold text-stone-900 mt-1">
-                      {selected.title}
-                    </h3>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setSelected(null)}
-                  className="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-stone-800 flex items-center justify-center transition active:scale-90 cursor-pointer -mr-1 -mt-1"
-                  aria-label="Close"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              <p className="text-xs sm:text-sm text-stone-600 mb-5 leading-relaxed font-light">
-                {selected.description}
-              </p>
-
-              {/* WhatsApp Action Button with Apple Bouncy Spring */}
-              <a
-                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(selected.whatsAppMessage)}`}
-                target="_blank"
-                rel="noreferrer"
-                className="apple-bounce w-full flex items-center justify-center gap-2 bg-stone-900 hover:bg-stone-800 active:scale-[0.93] text-white text-xs sm:text-sm font-semibold py-3.5 rounded-2xl shadow-xl transition-all duration-200 min-h-[48px] cursor-pointer"
-              >
-                <Phone className="w-4 h-4" />
-                <span>{selected.actionText}</span>
-              </a>
-            </div>
-          </div>
-        </>
+        <SelectedPinDrawer
+          key={selected.id}
+          selected={selected}
+          onClose={() => setSelected(null)}
+        />
       )}
 
     </div>
