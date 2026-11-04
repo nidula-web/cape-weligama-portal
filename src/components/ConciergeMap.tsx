@@ -201,19 +201,19 @@ export default function ConciergeMap() {
   return (
     <div className="relative w-full h-full min-h-screen overflow-hidden">
       
-      {/* Floating Recenter Compass Pill (Mobile & Desktop with Apple Spring Bounce) */}
+      {/* Floating Recenter Compass Pill (Mobile & Desktop with Apple Spring Bounce, clear of top bar) */}
       <button
         type="button"
         onClick={() => setRecenterTrigger((p) => p + 1)}
-        className="apple-bounce absolute top-3 right-3 sm:top-4 sm:right-6 z-[400] flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-md border border-[#E5E4E0] shadow-md text-stone-800 text-[10.5px] sm:text-[11px] font-medium active:scale-90 transition-all cursor-pointer"
+        className="apple-bounce absolute top-[116px] sm:top-24 right-3 sm:right-6 z-[400] flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-md border border-[#E5E4E0] shadow-md text-stone-800 text-[10.5px] sm:text-[11px] font-semibold active:scale-90 transition-all cursor-pointer"
         title="Recenter Map on Cape Weligama"
       >
         <Compass className="w-3.5 h-3.5 text-[#C5A880] animate-spin [animation-duration:12s]" />
         <span>Cape Weligama</span>
       </button>
 
-      {/* Sleek Minimalist Luxury Layer Switcher (Bottom-Left with Apple Bouncy Press) */}
-      <div className="absolute bottom-20 left-3 sm:bottom-6 sm:left-6 z-[400] flex bg-white/95 sm:bg-white/90 backdrop-blur-md rounded-full p-1 border border-[#E5E4E0] shadow-md sm:shadow-sm">
+      {/* Sleek Minimalist Luxury Layer Switcher (Bottom-Left with Apple Bouncy Press, clear of ViewSwitcher) */}
+      <div className="absolute bottom-[max(5rem,calc(env(safe-area-inset-bottom)+4rem))] left-3 sm:bottom-6 sm:left-6 z-[400] flex bg-white/95 sm:bg-white/90 backdrop-blur-md rounded-full p-1 border border-[#E5E4E0] shadow-md sm:shadow-sm">
         <button
           type="button"
           onClick={() => setMapStyle('street')}

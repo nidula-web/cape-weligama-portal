@@ -260,17 +260,17 @@ function createPinIcon(
   return L.divIcon({
     className: 'numbered-luxury-pin',
     html: `
-      <div class="${isSelected ? 'pin-jiggle-active' : ''}" style="position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;transform:translate(-50%,-50%);touch-action:manipulation;">
+      <div class="${isSelected ? 'pin-jiggle-active' : ''}" style="position:relative;width:48px;height:48px;display:flex;align-items:center;justify-content:center;cursor:pointer;transform:translate(-50%,-50%);touch-action:manipulation;-webkit-tap-highlight-color:transparent;">
         ${isPool && isSelected ? `
           <div style="position:absolute;width:${size}px;height:${size}px;border-radius:50%;border:2px solid ${color};animation:poolRipple 2.2s cubic-bezier(0.2,0.8,0.2,1) infinite;pointer-events:none;"></div>
           <div style="position:absolute;width:${size}px;height:${size}px;border-radius:50%;border:1.5px solid ${color};animation:poolRipple 2.2s cubic-bezier(0.2,0.8,0.2,1) infinite;animation-delay:0.7s;pointer-events:none;"></div>
         ` : ''}
         ${isBeingEdited ? `
-          <div style="position:absolute;width:44px;height:44px;border-radius:50%;border:2px dashed #F59E0B;background:rgba(245,158,11,0.15);animation:pulse 1.6s infinite;pointer-events:none;"></div>
+          <div style="position:absolute;width:48px;height:48px;border-radius:50%;border:2px dashed #F59E0B;background:rgba(245,158,11,0.15);animation:pulse 1.6s infinite;pointer-events:none;"></div>
         ` : ''}
         <div class="apple-pin-badge" style="
           position:relative;z-index:2;
-          background:rgba(255,255,255,0.95);
+          background:rgba(255,255,255,0.96);
           backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
           border:1.5px solid ${isBeingEdited ? '#F59E0B' : color};
           width:${size}px;height:${size}px;border-radius:50%;
@@ -475,7 +475,8 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
       {/* ── CATEGORY FILTER PILLS (Floating below top bar) ───────────────── */}
       {!isEditorOpen && (
         <div
-          className={`fixed ${isAdmin ? 'top-22 sm:top-24' : 'top-16 sm:top-18'} left-1/2 -translate-x-1/2 z-30 flex items-center gap-1 bg-white/80 backdrop-blur-xl p-1 rounded-2xl border border-white/60 shadow-[0_8px_24px_rgba(0,0,0,0.06)] overflow-x-auto max-w-[calc(100vw-24px)] sm:max-w-2xl no-scrollbar pointer-events-auto transition-all duration-300`}
+          className={`fixed ${isAdmin ? 'top-22 sm:top-25' : 'top-[58px] sm:top-20'} left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 bg-white/85 backdrop-blur-2xl p-1 rounded-2xl border border-white/60 shadow-[0_8px_24px_rgba(0,0,0,0.08)] overflow-x-auto max-w-[calc(100vw-20px)] sm:max-w-2xl no-scrollbar pointer-events-auto transition-all duration-300`}
+          style={{ WebkitOverflowScrolling: 'touch' }}
           onMouseDown={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
         >
@@ -490,7 +491,7 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
                   setActiveFilter(key);
                   setSelected(null);
                 }}
-                className={`apple-bounce flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-[10.5px] sm:text-[11.5px] font-semibold whitespace-nowrap transition-all duration-200 active:scale-[0.92] cursor-pointer ${
+                className={`apple-bounce flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-[11px] sm:text-[11.5px] font-semibold whitespace-nowrap transition-all duration-200 active:scale-[0.92] cursor-pointer min-h-[34px] ${
                   isActive
                     ? 'bg-stone-900 text-white shadow-xs'
                     : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100/70'
@@ -511,7 +512,7 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
 
       {/* ── TOAST NOTIFICATION ───────────────────────────────────────────── */}
       {toastMsg && (
-        <div className="fixed top-26 sm:top-30 left-1/2 -translate-x-1/2 z-[1500] bg-stone-900/95 text-white px-4 py-2 rounded-full shadow-2xl border border-stone-700 text-xs font-medium backdrop-blur-md max-w-[90vw] text-center truncate pointer-events-none animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed top-26 sm:top-30 left-1/2 -translate-x-1/2 z-[1500] bg-stone-900/95 text-white px-4 py-2 rounded-full shadow-2xl border border-stone-700 text-xs font-semibold backdrop-blur-md max-w-[90vw] text-center truncate pointer-events-none animate-in fade-in zoom-in-95 duration-150">
           {toastMsg}
         </div>
       )}
@@ -525,7 +526,7 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
             e.stopPropagation();
             setIsEditorOpen((p) => !p);
           }}
-          className={`fixed top-16 sm:top-18 right-3 sm:right-6 z-[1200] px-3.5 py-1.5 rounded-full text-xs font-bold backdrop-blur-xl transition-all shadow-lg flex items-center gap-1.5 active:scale-95 cursor-pointer ${
+          className={`fixed top-[58px] sm:top-20 right-2.5 sm:right-6 z-[1200] px-3.5 py-1.5 rounded-full text-xs font-bold backdrop-blur-xl transition-all shadow-lg flex items-center gap-1.5 active:scale-95 cursor-pointer min-h-[34px] ${
             isEditorOpen
               ? 'bg-amber-500 text-stone-950 border border-amber-400'
               : 'bg-white/90 hover:bg-white text-stone-900 border border-white/60'
@@ -540,7 +541,7 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
       {/* ── ADMIN PIN EDITOR PANEL (admin only) ──────────────────────────── */}
       {isAdmin && isEditorOpen && (
         <div
-          className="fixed top-22 sm:top-24 left-3 sm:left-6 z-[1200] w-[calc(100vw-24px)] sm:w-84 max-h-[calc(100vh-120px)] bg-stone-950/95 text-stone-100 rounded-3xl shadow-2xl border border-stone-800 backdrop-blur-2xl p-4 flex flex-col gap-3 overflow-y-auto"
+          className="fixed top-[58px] sm:top-24 left-2.5 right-2.5 sm:right-auto sm:left-6 z-[1200] max-h-[62vh] sm:max-h-[calc(100vh-120px)] sm:w-84 bg-stone-950/95 text-stone-100 rounded-3xl shadow-2xl border border-stone-800 backdrop-blur-2xl p-4 flex flex-col gap-3 overflow-y-auto"
           onMouseDown={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
           onDoubleClick={(e) => e.stopPropagation()}
@@ -695,7 +696,7 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
 
       {/* ── FLOATING GUEST INSTRUCTION HINT ───────────────────────────────── */}
       {!isEditorOpen && !selected && (
-        <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 bg-white/85 text-stone-800 px-4 py-2 rounded-full text-xs font-medium backdrop-blur-xl border border-white/60 shadow-[0_8px_24px_rgba(0,0,0,0.08)] pointer-events-none flex items-center gap-2">
+        <div className="fixed bottom-[max(1.1rem,env(safe-area-inset-bottom))] sm:bottom-6 left-1/2 -translate-x-1/2 z-30 bg-white/90 text-stone-800 px-4 py-2 rounded-full text-xs font-semibold backdrop-blur-xl border border-white/60 shadow-[0_8px_24px_rgba(0,0,0,0.08)] pointer-events-none flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-stone-900 animate-pulse" />
           <span>Pinch to Explore · Tap Any Pin</span>
         </div>
@@ -706,19 +707,19 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
         <>
           {/* Subtle mobile backdrop */}
           <div
-            className="fixed inset-0 z-[990] bg-black/20 backdrop-blur-[2px] transition-opacity animate-in fade-in duration-200"
+            className="fixed inset-0 z-[990] bg-black/25 backdrop-blur-[2px] transition-opacity animate-in fade-in duration-200"
             onClick={() => setSelected(null)}
           />
 
           <div
-            className="fixed bottom-0 sm:bottom-6 left-0 right-0 sm:left-1/2 sm:-translate-x-1/2 sm:max-w-md w-full z-[1000] ios-spring-sheet pb-[max(1rem,env(safe-area-inset-bottom))] sm:pb-0 px-0 sm:px-4"
+            className="fixed bottom-0 sm:bottom-6 left-0 right-0 sm:left-1/2 sm:-translate-x-1/2 sm:max-w-md w-full z-[1000] ios-spring-sheet pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:pb-0 px-0 sm:px-4"
             onMouseDown={(e) => e.stopPropagation()}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-white/92 backdrop-blur-2xl p-5 sm:p-6 rounded-t-3xl sm:rounded-3xl shadow-[0_-12px_40px_rgba(0,0,0,0.15)] sm:shadow-[0_20px_50px_rgba(0,0,0,0.2)] border-t sm:border border-white/60">
+            <div className="bg-white/95 backdrop-blur-2xl p-5 sm:p-6 rounded-t-3xl sm:rounded-3xl shadow-[0_-12px_40px_rgba(0,0,0,0.18)] sm:shadow-[0_20px_50px_rgba(0,0,0,0.2)] border-t sm:border border-white/60">
               {/* iOS Grab Handle */}
               <div
-                className="w-10 h-1 bg-stone-300 rounded-full mx-auto mb-3.5 cursor-pointer hover:bg-stone-400 transition"
+                className="w-12 h-1.5 bg-stone-300/80 rounded-full mx-auto mb-3.5 cursor-pointer active:bg-stone-400 transition"
                 onClick={() => setSelected(null)}
               />
 
@@ -743,7 +744,7 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
                 <button
                   type="button"
                   onClick={() => setSelected(null)}
-                  className="p-1.5 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition active:scale-90 cursor-pointer"
+                  className="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-stone-800 flex items-center justify-center transition active:scale-90 cursor-pointer -mr-1 -mt-1"
                   aria-label="Close"
                 >
                   <X className="w-4 h-4" />
@@ -759,7 +760,7 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
                 href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(selected.whatsAppMessage)}`}
                 target="_blank"
                 rel="noreferrer"
-                className="apple-bounce w-full flex items-center justify-center gap-2 bg-stone-900 hover:bg-stone-800 active:scale-[0.93] text-white text-xs sm:text-sm font-semibold py-3.5 rounded-2xl shadow-xl transition-all duration-200 min-h-[46px] cursor-pointer"
+                className="apple-bounce w-full flex items-center justify-center gap-2 bg-stone-900 hover:bg-stone-800 active:scale-[0.93] text-white text-xs sm:text-sm font-semibold py-3.5 rounded-2xl shadow-xl transition-all duration-200 min-h-[48px] cursor-pointer"
               >
                 <Phone className="w-4 h-4" />
                 <span>{selected.actionText}</span>

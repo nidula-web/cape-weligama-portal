@@ -29,8 +29,8 @@ export default function CategoryFilter() {
   };
 
   return (
-    <div className="w-full bg-[#FAFAF8] py-2 sm:py-3 border-b border-[#E5E4E0]/80">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+    <div className="w-full bg-transparent py-1 sm:py-1.5">
+      <div className="max-w-7xl mx-auto px-1 sm:px-2">
         <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar scroll-smooth py-0.5">
           {CATEGORIES.map(({ key, label, icon: Icon }) => {
             const isSelected = categoryFilter === key;

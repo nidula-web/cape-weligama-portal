@@ -94,11 +94,11 @@ export default function Home() {
       )}
 
       {/* ── Unified Floating Apple-Style Luxury Top Bar ─────────────────── */}
-      <div className={`fixed ${isAdminMode ? 'top-10 sm:top-11' : 'top-3 sm:top-4'} left-3 right-3 sm:left-6 sm:right-6 max-w-5xl mx-auto z-40 pointer-events-auto transition-all duration-300`}>
-        <div className="bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.08)] rounded-2xl sm:rounded-full px-3 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between gap-2 sm:gap-3">
+      <div className={`fixed ${isAdminMode ? 'top-10 sm:top-11' : 'top-2.5 sm:top-4'} left-2.5 right-2.5 sm:left-6 sm:right-6 max-w-5xl mx-auto z-40 pointer-events-auto transition-all duration-300`}>
+        <div className="bg-white/85 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.08)] rounded-2xl sm:rounded-full px-2.5 sm:px-4 py-1.5 sm:py-2.5 flex items-center justify-between gap-1.5 sm:gap-3">
 
           {/* Left: Resort Brand */}
-          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 shrink">
             <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-stone-900 text-[#FAFAF8] flex items-center justify-center shadow-xs shrink-0">
               <Waves className="w-3.5 h-3.5 stroke-[1.75]" />
             </div>
@@ -106,18 +106,18 @@ export default function Home() {
               <h1 className="text-[11px] sm:text-sm font-serif font-bold tracking-tight text-stone-900 leading-tight truncate">
                 CAPE WELIGAMA
               </h1>
-              <p className="text-[7.5px] sm:text-[9px] font-semibold tracking-[0.16em] uppercase text-stone-400 leading-tight truncate">
+              <p className="hidden xs:block text-[7.5px] sm:text-[9px] font-semibold tracking-[0.16em] uppercase text-stone-400 leading-tight truncate">
                 Relais &amp; Châteaux
               </p>
             </div>
           </div>
 
           {/* Center: Minimalist Segmented Toggle */}
-          <div className="inline-flex items-center bg-stone-100/90 p-[2.5px] rounded-full border border-stone-200/60 shadow-inner">
+          <div className="inline-flex items-center bg-stone-100/90 p-[2.5px] rounded-full border border-stone-200/60 shadow-inner shrink-0">
             <button
               type="button"
               onClick={() => setDomain('resort')}
-              className={`apple-bounce flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-[11px] font-semibold tracking-wide transition-all duration-200 whitespace-nowrap active:scale-[0.92] cursor-pointer ${
+              className={`apple-bounce flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-full text-[10.5px] sm:text-[11.5px] font-semibold tracking-wide transition-all duration-200 whitespace-nowrap active:scale-[0.92] cursor-pointer min-h-[32px] sm:min-h-[34px] ${
                 domain === 'resort'
                   ? 'bg-stone-900 text-white shadow-xs scale-[1.02]'
                   : 'text-stone-500 hover:text-stone-800'
@@ -130,7 +130,7 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setDomain('coast')}
-              className={`apple-bounce flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-[11px] font-semibold tracking-wide transition-all duration-200 whitespace-nowrap active:scale-[0.92] cursor-pointer ${
+              className={`apple-bounce flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-full text-[10.5px] sm:text-[11.5px] font-semibold tracking-wide transition-all duration-200 whitespace-nowrap active:scale-[0.92] cursor-pointer min-h-[32px] sm:min-h-[34px] ${
                 domain === 'coast'
                   ? 'bg-stone-900 text-white shadow-xs scale-[1.02]'
                   : 'text-stone-500 hover:text-stone-800'
@@ -143,7 +143,7 @@ export default function Home() {
           </div>
 
           {/* Right: Guest mode badge or GM link */}
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
             {isLockedGuestMode ? (
               <span className="inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 text-[8.5px] sm:text-[9.5px] font-medium rounded-full bg-stone-900/5 text-stone-600 border border-stone-200/80">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -152,11 +152,12 @@ export default function Home() {
             ) : (
               <Link
                 href="/admin"
-                className="flex items-center gap-1 px-2 sm:px-2.5 py-1 text-[9.5px] sm:text-[10px] font-medium rounded-full bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-200/80 transition-all active:scale-95"
+                className="w-8 h-8 sm:w-auto sm:px-2.5 sm:py-1 rounded-full bg-stone-100/90 hover:bg-stone-200/90 text-stone-800 border border-stone-200/80 flex items-center justify-center gap-1 transition-all active:scale-90"
                 title="Open Hotel Management Portal"
+                aria-label="GM Portal"
               >
-                <ShieldCheck className="w-3 h-3 text-stone-600" />
-                <span className="hidden md:inline">GM Portal</span>
+                <ShieldCheck className="w-3.5 h-3.5 text-stone-700" />
+                <span className="hidden md:inline text-[10px] font-semibold">GM Portal</span>
               </Link>
             )}
           </div>
@@ -166,8 +167,8 @@ export default function Home() {
 
       {/* ── Category Filter for Coastal Guide (Floating underneath top bar) ─ */}
       {domain === 'coast' && (
-        <div className={`fixed ${isAdminMode ? 'top-23 sm:top-25' : 'top-16 sm:top-18'} left-1/2 -translate-x-1/2 z-30 max-w-[calc(100vw-24px)] transition-all duration-300 pointer-events-auto`}>
-          <div className="bg-white/80 backdrop-blur-xl border border-white/60 rounded-2xl shadow-lg p-1">
+        <div className={`fixed ${isAdminMode ? 'top-22 sm:top-25' : 'top-[58px] sm:top-20'} left-1/2 -translate-x-1/2 z-30 max-w-[calc(100vw-20px)] transition-all duration-300 pointer-events-auto`}>
+          <div className="bg-white/85 backdrop-blur-2xl border border-white/60 rounded-2xl shadow-lg p-1">
             <CategoryFilter />
           </div>
         </div>
