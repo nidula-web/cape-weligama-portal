@@ -1,0 +1,180 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+:root {
+  --background: #FAFAF8;
+  --foreground: #1A1A1A;
+}
+
+body {
+  background-color: #FAFAF8;
+  color: #1A1A1A;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Leaflet Map styling to match Aman / Kinfolk aesthetic */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: #EAE8E2 !important;
+  font-family: inherit;
+  z-index: 10;
+}
+
+/* Subdue the Base Map (Muted Luxury Styling) */
+.subdued-map-tiles,
+.subdued-map-tiles img,
+.subdued-leaflet-map .leaflet-tile-pane {
+  filter: contrast(0.92) brightness(0.96) saturate(0.55) !important;
+}
+
+/* Force Leaflet DivIcon container to be completely transparent with zero border */
+.leaflet-div-icon {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Hide default attribution bar styling subtly */
+.leaflet-control-attribution {
+  background: rgba(250, 250, 248, 0.8) !important;
+  backdrop-filter: blur(4px);
+  color: #706E6B !important;
+  font-size: 10px !important;
+  border-radius: 6px 0 0 0;
+  padding: 2px 8px !important;
+}
+
+.leaflet-control-zoom {
+  border: 1px solid #E5E4E0 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+}
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+  background-color: #FFFFFF !important;
+  color: #1A1A1A !important;
+  border-bottom: 1px solid #E5E4E0 !important;
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  font-size: 14px !important;
+  transition: all 0.2s ease;
+}
+
+.leaflet-control-zoom-in:hover,
+.leaflet-control-zoom-out:hover {
+  background-color: #F5F4F0 !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FAFAF8;
+}
+::-webkit-scrollbar-thumb {
+  background: #E5E4E0;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C4C2BC;
+}
+
+/* Hide scrollbar on filter pill bar */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Apple-Style Fluid Micro-Interactions & Physics (60fps GPU Accelerated)
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* The "Water Droplet" Ripple (Pool Pin Animation) */
+@keyframes waterDropletRipple {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+.water-ripple-1 {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1.5px solid #2D82B7;
+  animation: waterDropletRipple 1.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.water-ripple-2 {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1.5px solid #2D82B7;
+  animation: waterDropletRipple 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.55s infinite;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Tactile Pin Scale Punch & Elevation */
+.apple-pin-badge {
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease-out;
+  will-change: transform;
+}
+
+.apple-pin-badge:hover {
+  transform: scale(1.08) translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22) !important;
+}
+
+.apple-pin-badge:active {
+  transform: scale(0.90) !important;
+  transition-duration: 150ms !important;
+  transition-timing-function: ease-out !important;
+}
+
+/* iOS Spring Drawer Animation (cubic-bezier(0.16, 1, 0.3, 1)) */
+@keyframes iosDrawerSpring {
+  0% {
+    transform: translateY(32px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.ios-spring-sheet {
+  animation: iosDrawerSpring 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* Pool pin ripple — used inside Leaflet DivIcon HTML */
+@keyframes poolRipple {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+/* Editor pulse glow on active-edit pin */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
