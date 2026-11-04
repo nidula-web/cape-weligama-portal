@@ -7,8 +7,8 @@ export const CAPE_WELIGAMA: Property = {
   aliases: ['cape-weligama', 'capeweligama', 'cape', 'cw'],
   name: 'Cape Weligama',
   location: 'Clifftop Headland, Cape Weligama, Abimanagama Rd, Weligama',
-  lat: 5.9690,
-  lng: 80.4048,
+  lat: 5.9598,
+  lng: 80.4099,
   tagline: 'Relais & Châteaux — 12-Acre Cliffside Estate',
   welcomeMessage:
     'Welcome to Cape Weligama. Your private ocean promontory sanctuary. Our concierge team has handpicked every experience below — from world-class surf breaks to candlelit heritage dinners. Simply tap any spot to dispatch a WhatsApp request.',

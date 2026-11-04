@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState, useRef } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -135,7 +135,7 @@ function createLuxuryVendorIcon(spot: Spot, isSelected: boolean): L.DivIcon {
 // Living "YOU ARE HERE" Hotel Beacon (Obsidian & Warm Brass Medallion + Radar Pulse)
 function createHotelBeaconIcon(hotelName: string): L.DivIcon {
   const html = `
-    <div class="relative flex flex-col items-center justify-center -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing group" style="touch-action: manipulation;" title="Drag to exact rooftop · Click to recenter">
+    <div class="relative flex flex-col items-center justify-center -translate-x-1/2 -translate-y-1/2 cursor-pointer group" style="touch-action: manipulation;" title="Cape Weligama · Relais & Châteaux">
       
       <!-- Multi-Tiered Living Radar Radiance -->
       <div class="absolute w-24 h-24 -top-12 -left-12 rounded-full pointer-events-none flex items-center justify-center">
@@ -189,13 +189,8 @@ export default function ConciergeMap() {
   const [recenterTrigger, setRecenterTrigger] = useState(0);
 
   // Exact verified cliffhead GPS coordinates: Clifftop Headland, Cape Weligama
-  const hotelLat = property.lat || 5.9690;
-  const hotelLng = property.lng || 80.4048;
-
-  // Draggable Cape Weligama anchor pin state
-  const [anchorPos, setAnchorPos] = useState<[number, number]>([hotelLat, hotelLng]);
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
-  const toastTimer = useRef<NodeJS.Timeout | null>(null);
+  const hotelLat = property.lat || 5.9598;
+  const hotelLng = property.lng || 80.4099;
 
   // Center map on Cape Weligama cliffhead
   const centerPosition: [number, number] = [hotelLat, hotelLng];
@@ -216,13 +211,6 @@ export default function ConciergeMap() {
   return (
     <div className="relative w-full h-full min-h-screen overflow-hidden">
 
-      {/* Floating Drag Calibration Toast Banner */}
-      {toastMsg && (
-        <div className="fixed top-20 sm:top-24 left-1/2 -translate-x-1/2 z-[1500] bg-stone-950/95 text-white px-4 py-2 rounded-full shadow-2xl border border-amber-400 text-xs font-semibold backdrop-blur-xl max-w-[92vw] text-center truncate pointer-events-none flex items-center gap-2 animate-in fade-in zoom-in-95">
-          <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping shrink-0" />
-          <span>{toastMsg}</span>
-        </div>
-      )}
       
       {/* Floating Recenter Compass Pill (Mobile & Desktop with Apple Spring Bounce, clear of top bar) */}
       <button
@@ -298,27 +286,13 @@ export default function ConciergeMap() {
           centerPosition={centerPosition}
         />
 
-        {/* Living "YOU ARE HERE" Hotel Beacon (Draggable) */}
+        {/* Living "YOU ARE HERE" Hotel Beacon sitting permanently at [5.9598, 80.4099] */}
         <Marker
-          draggable={true}
-          position={anchorPos}
+          draggable={false}
+          position={[hotelLat, hotelLng]}
           icon={hotelBeaconIcon}
           zIndexOffset={1000}
           eventHandlers={{
-            dragend: (e) => {
-              const latlng = e.target.getLatLng();
-              const newLat = parseFloat(latlng.lat.toFixed(5));
-              const newLng = parseFloat(latlng.lng.toFixed(5));
-              const coordsStr = `[${newLat}, ${newLng}]`;
-              setAnchorPos([newLat, newLng]);
-              console.log("📍 Exact Coords:", [newLat, newLng]);
-              if (typeof navigator !== 'undefined' && navigator.clipboard) {
-                navigator.clipboard.writeText(coordsStr).catch(() => {});
-              }
-              setToastMsg(`📍 Exact Coords: ${coordsStr} (Copied to Clipboard!)`);
-              if (toastTimer.current) clearTimeout(toastTimer.current);
-              toastTimer.current = setTimeout(() => setToastMsg(null), 4000);
-            },
             click: () => {
               setRecenterTrigger((p) => p + 1);
             },
