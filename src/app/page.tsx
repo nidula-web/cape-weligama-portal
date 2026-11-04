@@ -41,7 +41,7 @@ function SearchParamsHandler({
 
   useEffect(() => {
     lockPropertyFromParam(searchParams.get('hotel'));
-    const adminParam = searchParams.get('admin') === 'true' || searchParams.get('edit') === 'pins';
+    const adminParam = searchParams.get('admin') === 'true';
     setIsAdminMode(adminParam);
 
     const d = searchParams.get('domain');
@@ -145,7 +145,7 @@ export default function Home() {
             Loading…
           </div>
         ) : domain === 'resort' ? (
-          <ResortMasterplan />
+          <ResortMasterplan isAdmin={isAdminMode} />
         ) : viewMode === 'map' ? (
           <ConciergeMap />
         ) : (

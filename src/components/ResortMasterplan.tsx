@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { MapContainer, ImageOverlay, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -329,28 +328,39 @@ function MapClickHandler({
    MAIN COMPONENT
    ═══════════════════════════════════════════════════════════════════════════════ */
 
-export default function ResortMasterplan() {
+interface ResortMasterplanProps {
+  isAdmin?: boolean;
+}
+
+export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: ResortMasterplanProps) {
   /* ── State ───────────────────────────────────────────────────────────────── */
   const [amenities, setAmenities] = useState<ResortAmenity[]>(DEFAULT_AMENITIES);
   const [selected, setSelected] = useState<ResortAmenity | null>(null);
   const [activeFilter, setActiveFilter] = useState<FilterCategory>('All');
 
-  // Admin editor state
+  // Admin state — strictly active only if ?admin=true
+  const [isAdmin, setIsAdmin] = useState<boolean>(propIsAdmin);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editPinId, setEditPinId] = useState<string>('reception');
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const toastTimer = useRef<NodeJS.Timeout | null>(null);
 
-  // Admin gate: ?admin=true or ?edit=pins
-  const searchParams = useSearchParams();
-  const isAdmin = searchParams?.get('admin') === 'true' || searchParams?.get('edit') === 'pins';
-
-  // Automatically open the editor panel if admin view is detected
+  // Sync prop or check window.location.search on client mount as reliable fallback
   useEffect(() => {
-    if (isAdmin) {
+    if (propIsAdmin) {
+      setIsAdmin(true);
       setIsEditorOpen(true);
+      return;
     }
-  }, [isAdmin]);
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search);
+      const isParam = p.get('admin') === 'true';
+      setIsAdmin(isParam);
+      if (isParam) {
+        setIsEditorOpen(true);
+      }
+    }
+  }, [propIsAdmin]);
 
   /* ── Load saved pin coords from localStorage ─────────────────────────── */
   useEffect(() => {
@@ -475,8 +485,12 @@ export default function ResortMasterplan() {
       {isAdmin && (
         <button
           type="button"
-          onClick={() => setIsEditorOpen((p) => !p)}
-          className={`absolute top-2.5 right-2.5 sm:top-4 sm:right-4 z-[1000] px-3 sm:px-3.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1.5 active:scale-95 ${
+          onMouseDown={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsEditorOpen((p) => !p);
+          }}
+          className={`absolute top-2.5 right-2.5 sm:top-4 sm:right-4 z-[1200] px-3 sm:px-3.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1.5 active:scale-95 ${
             isEditorOpen
               ? 'bg-amber-500 text-stone-950 font-bold border border-amber-400'
               : 'bg-white/90 hover:bg-white text-stone-900 border border-stone-200'
@@ -490,7 +504,13 @@ export default function ResortMasterplan() {
 
       {/* ── ADMIN PIN EDITOR PANEL (admin only) ──────────────────────────── */}
       {isAdmin && isEditorOpen && (
-        <div className="absolute top-2.5 left-2.5 right-2.5 sm:right-auto sm:top-4 sm:left-4 z-[1000] w-auto sm:w-80 max-w-[calc(100vw-20px)] sm:max-w-[calc(100vw-32px)] bg-stone-950/95 text-stone-100 rounded-2xl shadow-2xl border border-stone-800 backdrop-blur-xl p-3.5 sm:p-4 flex flex-col gap-2.5 sm:gap-3">
+        <div
+          className="absolute top-2.5 left-2.5 right-2.5 sm:right-auto sm:top-4 sm:left-4 z-[1200] w-auto sm:w-80 max-w-[calc(100vw-20px)] sm:max-w-[calc(100vw-32px)] bg-stone-950/95 text-stone-100 rounded-2xl shadow-2xl border border-stone-800 backdrop-blur-xl p-3.5 sm:p-4 flex flex-col gap-2.5 sm:gap-3"
+          onMouseDown={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
+          onDoubleClick={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+        >
           {/* Header */}
           <div className="flex items-center justify-between border-b border-stone-800 pb-2">
             <div className="flex items-center gap-2">
