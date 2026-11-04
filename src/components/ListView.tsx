@@ -42,18 +42,18 @@ export default function ListView() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-32">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 pb-28 sm:pb-32">
       {/* Editorial Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-4 border-b border-[#E5E4E0]">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 sm:mb-8 pb-3 sm:pb-4 border-b border-[#E5E4E0]">
         <div>
-          <span className="text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase text-[#706E6B]">
+          <span className="text-[9.5px] sm:text-xs font-semibold tracking-[0.16em] sm:tracking-[0.2em] uppercase text-[#706E6B]">
             Editorial Compendium · {property.name}
           </span>
-          <h2 className="text-2xl sm:text-3xl font-serif font-medium text-[#1A1A1A] mt-1">
+          <h2 className="text-xl sm:text-3xl font-serif font-medium text-[#1A1A1A] mt-1">
             Curated Local Discoveries
           </h2>
         </div>
-        <p className="text-xs sm:text-sm text-[#706E6B] mt-2 sm:mt-0 font-light max-w-sm">
+        <p className="text-xs sm:text-sm text-[#706E6B] mt-1.5 sm:mt-0 font-light max-w-sm">
           Exclusively vetted recommendations by hotel management for an authentic Sri Lankan coastal stay.
         </p>
       </div>

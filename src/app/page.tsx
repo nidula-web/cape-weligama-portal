@@ -51,7 +51,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] text-stone-900 flex flex-col selection:bg-stone-900/10">
+    <div className="min-h-[100dvh] bg-[#FAFAF8] text-stone-900 flex flex-col selection:bg-stone-900/10 overscroll-none">
 
       {/* URL param sync */}
       <Suspense fallback={null}>
@@ -62,33 +62,35 @@ export default function Home() {
       <Navbar />
 
       {/* ── Dual Domain Toggle ───────────────────────────────────────── */}
-      <div className="sticky top-14 sm:top-16 z-30 bg-[#FAFAF8]/96 backdrop-blur-md border-b border-stone-200">
-        <div className="flex justify-center py-2.5 px-4">
-          <div className="inline-flex items-center bg-stone-100 p-[3px] rounded-full border border-stone-200 shadow-xs">
+      <div className="sticky top-13 sm:top-16 z-30 bg-[#FAFAF8]/96 backdrop-blur-md border-b border-stone-200">
+        <div className="flex justify-center py-2 sm:py-2.5 px-3 sm:px-4">
+          <div className="inline-flex items-center bg-stone-100 p-[2.5px] sm:p-[3px] rounded-full border border-stone-200 shadow-xs max-w-full">
             <button
               type="button"
               onClick={() => setDomain('resort')}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[11px] font-semibold tracking-wide transition-all duration-200 ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 rounded-full text-[10.5px] sm:text-[11px] font-semibold tracking-wide transition-all duration-200 whitespace-nowrap active:scale-95 ${
                 domain === 'resort'
                   ? 'bg-stone-900 text-white shadow-sm'
                   : 'text-stone-500 hover:text-stone-800'
               }`}
             >
               <span>📍</span>
-              <span>Resort Grounds</span>
-              <span className="hidden sm:inline text-[9px] font-normal opacity-70">(12 Acres)</span>
+              <span className="inline sm:hidden">Grounds</span>
+              <span className="hidden sm:inline">Resort Grounds</span>
+              <span className="hidden md:inline text-[9px] font-normal opacity-70">(12 Acres)</span>
             </button>
             <button
               type="button"
               onClick={() => setDomain('coast')}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[11px] font-semibold tracking-wide transition-all duration-200 ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 rounded-full text-[10.5px] sm:text-[11px] font-semibold tracking-wide transition-all duration-200 whitespace-nowrap active:scale-95 ${
                 domain === 'coast'
                   ? 'bg-stone-900 text-white shadow-sm'
                   : 'text-stone-500 hover:text-stone-800'
               }`}
             >
               <span>🌊</span>
-              <span>Explore South Coast</span>
+              <span className="inline sm:hidden">Coast Guide</span>
+              <span className="hidden sm:inline">Explore South Coast</span>
             </button>
           </div>
         </div>
@@ -103,9 +105,9 @@ export default function Home() {
       </div>
 
       {/* ── Main Content ─────────────────────────────────────────────── */}
-      <main className="flex-1 relative">
+      <main className="flex-1 relative flex flex-col">
         {!mounted ? (
-          <div className="w-full min-h-[500px] flex items-center justify-center bg-[#FAFAF8] text-stone-400 text-xs tracking-widest uppercase">
+          <div className="w-full flex-1 min-h-[460px] flex items-center justify-center bg-[#FAFAF8] text-stone-400 text-xs tracking-widest uppercase">
             Loading…
           </div>
         ) : domain === 'resort' ? (

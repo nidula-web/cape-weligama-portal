@@ -264,7 +264,7 @@ function createPinIcon(
   return L.divIcon({
     className: 'numbered-luxury-pin',
     html: `
-      <div style="position:relative;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;transform:translate(-50%,-50%);">
+      <div style="position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;transform:translate(-50%,-50%);touch-action:manipulation;">
         ${isPool && isSelected ? `
           <div style="position:absolute;width:${size}px;height:${size}px;border-radius:50%;border:2px solid ${color};animation:poolRipple 2.2s cubic-bezier(0.2,0.8,0.2,1) infinite;pointer-events:none;"></div>
           <div style="position:absolute;width:${size}px;height:${size}px;border-radius:50%;border:1.5px solid ${color};animation:poolRipple 2.2s cubic-bezier(0.2,0.8,0.2,1) infinite;animation-delay:0.7s;pointer-events:none;"></div>
@@ -422,11 +422,11 @@ export default function ResortMasterplan() {
 
   /* ═════════════════════════════════════════════════════════════════════════ */
   return (
-    <div className="relative w-full h-[calc(100vh-140px)] min-h-[520px] bg-[#141414] overflow-hidden rounded-3xl border border-stone-800 shadow-2xl">
+    <div className="relative w-full h-[calc(100dvh-105px)] sm:h-[calc(100vh-130px)] min-h-[460px] sm:min-h-[520px] bg-[#141414] overflow-hidden rounded-none sm:rounded-3xl border-0 sm:border border-stone-800 shadow-none sm:shadow-2xl">
 
       {/* ── CATEGORY FILTER PILLS (Guest-facing) ─────────────────────────── */}
       {!isEditorOpen && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[500] flex items-center gap-1 bg-black/50 backdrop-blur-2xl p-1 rounded-2xl border border-white/10 shadow-xl overflow-x-auto max-w-[calc(100vw-32px)] no-scrollbar">
+        <div className="absolute top-2.5 sm:top-4 left-1/2 -translate-x-1/2 z-[500] flex items-center gap-1 bg-black/60 sm:bg-black/50 backdrop-blur-2xl p-1 rounded-xl sm:rounded-2xl border border-white/15 sm:border-white/10 shadow-xl overflow-x-auto max-w-[calc(100vw-16px)] sm:max-w-[calc(100vw-32px)] no-scrollbar">
           {FILTER_OPTIONS.map(({ key, label }) => {
             const isActive = activeFilter === key;
             const dotColor = key === 'All' ? undefined : CATEGORY_COLORS[key as PinCategory];
@@ -438,7 +438,7 @@ export default function ResortMasterplan() {
                   setActiveFilter(key);
                   setSelected(null);
                 }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-medium whitespace-nowrap transition-all duration-200 ${
+                className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-[11px] font-medium whitespace-nowrap transition-all duration-200 active:scale-95 ${
                   isActive
                     ? 'bg-white text-stone-900 font-semibold shadow-sm'
                     : 'text-white/65 hover:text-white/90'
@@ -446,7 +446,7 @@ export default function ResortMasterplan() {
               >
                 {dotColor && (
                   <span
-                    className="w-2 h-2 rounded-full shrink-0"
+                    className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full shrink-0"
                     style={{ background: dotColor, opacity: isActive ? 1 : 0.6 }}
                   />
                 )}
@@ -459,7 +459,7 @@ export default function ResortMasterplan() {
 
       {/* ── TOAST NOTIFICATION ───────────────────────────────────────────── */}
       {toastMsg && (
-        <div className="absolute top-14 left-1/2 -translate-x-1/2 z-[1500] bg-stone-900/95 text-white px-4 py-2 rounded-full shadow-2xl border border-stone-700 text-xs font-medium backdrop-blur-md">
+        <div className="absolute top-12 sm:top-14 left-1/2 -translate-x-1/2 z-[1500] bg-stone-900/95 text-white px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-2xl border border-stone-700 text-[11px] sm:text-xs font-medium backdrop-blur-md max-w-[90vw] text-center truncate">
           {toastMsg}
         </div>
       )}
@@ -469,7 +469,7 @@ export default function ResortMasterplan() {
         <button
           type="button"
           onClick={() => setIsEditorOpen((p) => !p)}
-          className={`absolute top-4 right-4 z-[1000] px-3.5 py-1.5 rounded-xl text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1.5 ${
+          className={`absolute top-2.5 right-2.5 sm:top-4 sm:right-4 z-[1000] px-3 sm:px-3.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1.5 active:scale-95 ${
             isEditorOpen
               ? 'bg-amber-500 text-stone-950 font-bold border border-amber-400'
               : 'bg-white/90 hover:bg-white text-stone-900 border border-stone-200'
@@ -477,15 +477,15 @@ export default function ResortMasterplan() {
           title="Toggle Pin Editor (Hotkey: E)"
         >
           <Edit3 className="w-3.5 h-3.5" />
-          <span>{isEditorOpen ? 'Exit Editor' : '🎯 Pin Editor'}</span>
+          <span>{isEditorOpen ? 'Exit' : '🎯 Pins'}</span>
         </button>
       )}
 
       {/* ── ADMIN PIN EDITOR PANEL (admin only) ──────────────────────────── */}
       {isAdmin && isEditorOpen && (
-        <div className="absolute top-4 left-4 z-[1000] w-80 max-w-[calc(100vw-32px)] bg-stone-950/95 text-stone-100 rounded-2xl shadow-2xl border border-stone-800 backdrop-blur-xl p-4 flex flex-col gap-3">
+        <div className="absolute top-2.5 left-2.5 right-2.5 sm:right-auto sm:top-4 sm:left-4 z-[1000] w-auto sm:w-80 max-w-[calc(100vw-20px)] sm:max-w-[calc(100vw-32px)] bg-stone-950/95 text-stone-100 rounded-2xl shadow-2xl border border-stone-800 backdrop-blur-xl p-3.5 sm:p-4 flex flex-col gap-2.5 sm:gap-3">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-stone-800 pb-2.5">
+          <div className="flex items-center justify-between border-b border-stone-800 pb-2">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
               <span className="text-xs font-serif font-bold text-white tracking-wide">
@@ -501,7 +501,7 @@ export default function ResortMasterplan() {
           </p>
 
           {/* Pin list */}
-          <div className="max-h-60 overflow-y-auto space-y-1 pr-1">
+          <div className="max-h-48 sm:max-h-60 overflow-y-auto space-y-1 pr-1">
             {amenities.map((a) => {
               const active = a.id === editPinId;
               return (
@@ -551,7 +551,7 @@ export default function ResortMasterplan() {
               className="flex-1 bg-stone-800 hover:bg-stone-700 active:scale-95 text-white py-1.5 px-2 rounded-xl text-[11px] font-semibold transition flex items-center justify-center gap-1.5"
             >
               <Copy className="w-3.5 h-3.5" />
-              <span>Copy JSON</span>
+              <span>Copy</span>
             </button>
             <button
               type="button"
@@ -575,6 +575,7 @@ export default function ResortMasterplan() {
 
       {/* ── LEAFLET MAP ──────────────────────────────────────────────────── */}
       <MapContainer
+        key="resort-masterplan-container"
         crs={L.CRS.Simple}
         bounds={bounds}
         maxBounds={bounds}
@@ -620,62 +621,73 @@ export default function ResortMasterplan() {
 
       {/* ── GUEST HINT PILL ──────────────────────────────────────────────── */}
       {!isEditorOpen && !selected && (
-        <div className="absolute bottom-4 left-4 z-[500] bg-black/55 text-white/80 px-4 py-1.5 rounded-full text-[11px] font-light backdrop-blur-md pointer-events-none border border-white/10">
-          Pinch to Explore · Tap Any Pin for Details
+        <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-[500] bg-black/55 text-white/80 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-[11px] font-light backdrop-blur-md pointer-events-none border border-white/10 shadow-sm">
+          Pinch to Explore · Tap Any Pin
         </div>
       )}
 
       {/* ── GUEST BOTTOM SHEET (Frosted glass, iOS spring) ────────────── */}
       {!isEditorOpen && selected && (
-        <div className="absolute bottom-4 left-4 right-4 max-w-sm mx-auto z-[1000] ios-spring-sheet">
-          <div className="bg-white/85 backdrop-blur-2xl p-5 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.25)] border border-white/40">
-            {/* iOS Grab Handle */}
-            <div className="w-9 h-1 bg-stone-300 rounded-full mx-auto mb-3" />
+        <>
+          {/* Backdrop for easy mobile dismissal */}
+          <div
+            className="fixed sm:hidden inset-0 z-[990] bg-black/30 backdrop-blur-[2px] transition-opacity animate-in fade-in duration-200"
+            onClick={() => setSelected(null)}
+          />
 
-            {/* Header */}
-            <div className="flex justify-between items-start mb-2">
-              <div className="flex items-center gap-2.5">
-                <span
-                  className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[11px] font-bold shrink-0 shadow-xs"
-                  style={{ background: CATEGORY_COLORS[selected.category] }}
-                >
-                  {selected.num}
-                </span>
-                <div>
-                  <span className="text-[10px] tracking-widest uppercase font-semibold text-stone-500 bg-stone-100 px-2.5 py-0.5 rounded-full border border-stone-200">
-                    {selected.category}
-                  </span>
-                  <h3 className="text-base font-serif font-bold text-stone-900 mt-1">
-                    {selected.title}
-                  </h3>
-                </div>
-              </div>
-              <button
-                type="button"
+          <div className="fixed sm:absolute bottom-0 sm:bottom-4 left-0 right-0 sm:left-4 sm:right-4 sm:max-w-sm sm:mx-auto z-[1000] ios-spring-sheet pb-[max(1rem,env(safe-area-inset-bottom))] sm:pb-0">
+            <div className="bg-white/95 sm:bg-white/85 backdrop-blur-2xl p-4 sm:p-5 rounded-t-3xl sm:rounded-3xl shadow-[0_-12px_40px_rgba(0,0,0,0.35)] sm:shadow-[0_20px_50px_rgba(0,0,0,0.25)] border-t sm:border border-white/50">
+              {/* iOS Grab Handle */}
+              <div
+                className="w-10 h-1 bg-stone-300 rounded-full mx-auto mb-3 cursor-pointer"
                 onClick={() => setSelected(null)}
-                className="p-1.5 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition"
-                aria-label="Close"
+              />
+
+              {/* Header */}
+              <div className="flex justify-between items-start mb-2">
+                <div className="flex items-center gap-2.5">
+                  <span
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[11px] font-bold shrink-0 shadow-xs"
+                    style={{ background: CATEGORY_COLORS[selected.category] }}
+                  >
+                    {selected.num}
+                  </span>
+                  <div>
+                    <span className="text-[9.5px] sm:text-[10px] tracking-widest uppercase font-semibold text-stone-500 bg-stone-100 px-2 sm:px-2.5 py-0.5 rounded-full border border-stone-200">
+                      {selected.category}
+                    </span>
+                    <h3 className="text-sm sm:text-base font-serif font-bold text-stone-900 mt-1">
+                      {selected.title}
+                    </h3>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelected(null)}
+                  className="p-1.5 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition active:scale-90"
+                  aria-label="Close"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <p className="text-xs text-stone-600 mb-4 leading-relaxed font-light">
+                {selected.description}
+              </p>
+
+              {/* WhatsApp Action Button with 44px min tap height */}
+              <a
+                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(selected.whatsAppMessage)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full flex items-center justify-center gap-2 bg-stone-900 hover:bg-stone-800 active:scale-[0.98] text-white text-xs font-semibold py-3.5 sm:py-3 rounded-2xl shadow-lg transition-all duration-150 min-h-[44px]"
               >
-                <X className="w-4 h-4" />
-              </button>
+                <Phone className="w-3.5 h-3.5" />
+                <span>{selected.actionText}</span>
+              </a>
             </div>
-
-            <p className="text-xs text-stone-600 mb-4 leading-relaxed font-light">
-              {selected.description}
-            </p>
-
-            {/* WhatsApp Action Button */}
-            <a
-              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(selected.whatsAppMessage)}`}
-              target="_blank"
-              rel="noreferrer"
-              className="w-full flex items-center justify-center gap-2 bg-stone-900 hover:bg-stone-800 active:scale-[0.98] text-white text-xs font-semibold py-3 rounded-2xl shadow-lg transition-all duration-150"
-            >
-              <Phone className="w-3.5 h-3.5" />
-              <span>{selected.actionText}</span>
-            </a>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

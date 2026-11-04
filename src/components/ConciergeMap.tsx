@@ -180,14 +180,14 @@ export default function ConciergeMap() {
   }, [property.name]);
 
   return (
-    <div className="relative w-full h-[calc(100vh-113px)] sm:h-[calc(100vh-126px)] min-h-[500px]">
+    <div className="relative w-full h-[calc(100dvh-105px)] sm:h-[calc(100vh-126px)] min-h-[460px] sm:min-h-[500px]">
       
-      {/* Sleek Minimalist Luxury Layer Switcher (Bottom-Left) */}
-      <div className="absolute bottom-6 left-6 z-[400] flex bg-white/90 backdrop-blur-md rounded-full p-1 border border-[#E5E4E0] shadow-sm">
+      {/* Sleek Minimalist Luxury Layer Switcher (Bottom-Left, raised on mobile to clear bottom switcher) */}
+      <div className="absolute bottom-20 left-3 sm:bottom-6 sm:left-6 z-[400] flex bg-white/95 sm:bg-white/90 backdrop-blur-md rounded-full p-1 border border-[#E5E4E0] shadow-md sm:shadow-sm">
         <button
           type="button"
           onClick={() => setMapStyle('street')}
-          className={`px-3 py-1.5 text-xs font-medium rounded-full transition-all ${
+          className={`px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-medium rounded-full transition-all active:scale-95 ${
             mapStyle === 'street' 
               ? 'bg-[#1A1A1A] text-white shadow-xs' 
               : 'text-[#706E6B] hover:text-[#1A1A1A]'
@@ -198,7 +198,7 @@ export default function ConciergeMap() {
         <button
           type="button"
           onClick={() => setMapStyle('satellite')}
-          className={`px-3 py-1.5 text-xs font-medium rounded-full transition-all ${
+          className={`px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-medium rounded-full transition-all active:scale-95 ${
             mapStyle === 'satellite' 
               ? 'bg-[#1A1A1A] text-white shadow-xs' 
               : 'text-[#706E6B] hover:text-[#1A1A1A]'
@@ -209,6 +209,7 @@ export default function ConciergeMap() {
       </div>
 
       <MapContainer
+        key="concierge-coastal-map"
         center={centerPosition}
         zoom={12}
         minZoom={10}

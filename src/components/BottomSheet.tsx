@@ -49,10 +49,13 @@ export default function BottomSheet() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="spot-title"
-        className="fixed z-50 bottom-0 left-0 right-0 max-h-[92vh] sm:max-h-[85vh] md:bottom-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-xl bg-[#FAFAF8] rounded-t-3xl md:rounded-2xl shadow-2xl border border-[#E5E4E0] overflow-hidden flex flex-col animate-in slide-in-from-bottom duration-300"
+        className="fixed z-50 bottom-0 left-0 right-0 max-h-[88dvh] sm:max-h-[85vh] md:bottom-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-xl bg-[#FAFAF8] rounded-t-3xl md:rounded-2xl shadow-2xl border border-[#E5E4E0] overflow-hidden flex flex-col animate-in slide-in-from-bottom duration-300"
       >
         {/* Mobile Drag Indicator Bar */}
-        <div className="w-full flex items-center justify-center pt-3 pb-1 md:hidden">
+        <div
+          className="w-full flex items-center justify-center pt-3 pb-1 md:hidden cursor-pointer"
+          onClick={() => setSelectedSpot(null)}
+        >
           <div className="w-12 h-1.5 rounded-full bg-[#D1CFCA]" />
         </div>
 
@@ -177,8 +180,8 @@ export default function BottomSheet() {
 
         </div>
 
-        {/* High-Contrast Bottom CTA Action Bar */}
-        <div className="p-4 sm:p-5 bg-white border-t border-[#E5E4E0] shadow-md flex flex-col gap-3">
+        {/* High-Contrast Bottom CTA Action Bar with Safe Area Inset */}
+        <div className="p-4 sm:p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] bg-white border-t border-[#E5E4E0] shadow-md flex flex-col gap-3">
           
           <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
             {/* Primary CTA: Book via WhatsApp or Custom Resort Action */}

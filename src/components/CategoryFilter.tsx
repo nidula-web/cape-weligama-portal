@@ -29,9 +29,9 @@ export default function CategoryFilter() {
   };
 
   return (
-    <div className="w-full bg-[#FAFAF8] py-2.5 sm:py-3 border-b border-[#E5E4E0]/80">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-1">
+    <div className="w-full bg-[#FAFAF8] py-2 sm:py-3 border-b border-[#E5E4E0]/80">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar scroll-smooth py-0.5">
           {CATEGORIES.map(({ key, label, icon: Icon }) => {
             const isSelected = categoryFilter === key;
             const count = getCategoryCount(key);
@@ -40,7 +40,7 @@ export default function CategoryFilter() {
               <button
                 key={key}
                 onClick={() => setCategoryFilter(key)}
-                className={`flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 border shrink-0 ${
+                className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-medium whitespace-nowrap transition-all duration-200 border shrink-0 active:scale-95 ${
                   isSelected
                     ? 'bg-[#1E3A2B] text-white border-[#1E3A2B] shadow-sm'
                     : 'bg-white text-[#706E6B] border-[#E5E4E0] hover:text-[#1A1A1A] hover:border-[#1A1A1A]/30'
