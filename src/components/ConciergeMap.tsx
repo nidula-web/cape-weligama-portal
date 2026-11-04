@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { MapContainer, TileLayer, Marker, useMap, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMap, useMapEvents, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useConcierge } from '@/context/ConciergeContext';
@@ -31,13 +31,23 @@ function MapViewController({
 
   useEffect(() => {
     if (recenterTrigger > 0) {
-      map.flyTo(centerPosition, 13, {
+      map.flyTo(centerPosition, 14, {
         duration: 1.1,
         easeLinearity: 0.18,
       });
     }
   }, [recenterTrigger, centerPosition, map]);
 
+  return null;
+}
+
+// Dev Helper: click anywhere on coastal map to log exact coordinates
+function ClickCoordLogger() {
+  useMapEvents({
+    click(e) {
+      console.log('Clicked:', [e.latlng.lat, e.latlng.lng]);
+    },
+  });
   return null;
 }
 
@@ -179,8 +189,8 @@ export default function ConciergeMap() {
   const [recenterTrigger, setRecenterTrigger] = useState(0);
 
   // Exact verified cliffhead GPS coordinates: Clifftop Headland, Cape Weligama
-  const hotelLat = property.lat || 5.9684;
-  const hotelLng = property.lng || 80.4195;
+  const hotelLat = property.lat || 5.9690;
+  const hotelLng = property.lng || 80.4048;
 
   // Center map on Cape Weligama cliffhead
   const centerPosition: [number, number] = [hotelLat, hotelLng];
@@ -241,7 +251,7 @@ export default function ConciergeMap() {
       <MapContainer
         key="concierge-coastal-map"
         center={centerPosition}
-        zoom={13}
+        zoom={14}
         minZoom={10}
         maxZoom={21}
         scrollWheelZoom={true}
@@ -266,13 +276,16 @@ export default function ConciergeMap() {
           />
         )}
 
+        {/* Dev helper: click anywhere on coastal map to log exact coordinates */}
+        <ClickCoordLogger />
+
         <MapViewController
           selectedSpot={selectedSpot}
           recenterTrigger={recenterTrigger}
           centerPosition={centerPosition}
         />
 
-        {/* Living "YOU ARE HERE" Hotel Beacon sitting exactly at [5.9684, 80.4195] */}
+        {/* Living "YOU ARE HERE" Hotel Beacon sitting exactly at [5.9690, 80.4048] */}
         <Marker
           position={[hotelLat, hotelLng]}
           icon={hotelBeaconIcon}
