@@ -199,7 +199,7 @@ export default function ConciergeMap() {
   }, [property.name]);
 
   return (
-    <div className="relative w-full h-[calc(100dvh-105px)] sm:h-[calc(100vh-126px)] min-h-[460px] sm:min-h-[500px] overflow-hidden">
+    <div className="relative w-full h-full min-h-screen overflow-hidden">
       
       {/* Floating Recenter Compass Pill (Mobile & Desktop with Apple Spring Bounce) */}
       <button

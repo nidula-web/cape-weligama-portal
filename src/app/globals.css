@@ -25,6 +25,13 @@ body {
   z-index: 10;
 }
 
+/* Masterplan full-bleed infinite canvas matching warm parchment tone */
+.resort-masterplan-map,
+.resort-masterplan-map .leaflet-pane,
+.resort-masterplan-map .leaflet-tile-pane {
+  background-color: #F5F3EC !important;
+}
+
 /* Subdue the Base Map (Muted Luxury Styling) */
 .subdued-map-tiles,
 .subdued-map-tiles img,

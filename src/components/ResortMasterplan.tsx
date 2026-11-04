@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { MapContainer, ImageOverlay, Marker, useMapEvents } from 'react-leaflet';
+import { MapContainer, ImageOverlay, Marker, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Phone, X, Edit3, Copy, Check, RotateCcw, MapPin } from 'lucide-react';
 
 /* ═══════════════════════════════════════════════════════════════════════════════
-   CONSTANTS
+   CONSTANTS & COLOR PALETTE
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 const IMAGE_WIDTH = 1204;
@@ -15,6 +15,7 @@ const IMAGE_HEIGHT = 915;
 const bounds: L.LatLngBoundsExpression = [[0, 0], [IMAGE_HEIGHT, IMAGE_WIDTH]];
 const STORAGE_KEY = 'cape_weligama_pins_v3'; // v3 = all 18 pins
 const WHATSAPP_NUMBER = '94770000000';
+const PARCHMENT_BG = '#F5F3EC'; // Exact background tone sampled from resort-map.jpg
 
 /* ═══════════════════════════════════════════════════════════════════════════════
    TYPES
@@ -34,10 +35,6 @@ export interface ResortAmenity {
   whatsAppMessage: string;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════════
-   CATEGORY CONFIG (Luxury colour palette)
-   ═══════════════════════════════════════════════════════════════════════════════ */
-
 const CATEGORY_COLORS: Record<PinCategory, string> = {
   Dining:   '#C86D51', // Terracotta
   Pool:     '#2D82B7', // Ocean Blue
@@ -47,7 +44,7 @@ const CATEGORY_COLORS: Record<PinCategory, string> = {
 };
 
 const FILTER_OPTIONS: { key: FilterCategory; label: string }[] = [
-  { key: 'All',      label: 'All' },
+  { key: 'All',      label: 'All Grounds' },
   { key: 'Dining',   label: 'Dining' },
   { key: 'Pool',     label: 'Pools' },
   { key: 'Wellness', label: 'Wellness' },
@@ -273,7 +270,7 @@ function createPinIcon(
         ` : ''}
         <div class="apple-pin-badge" style="
           position:relative;z-index:2;
-          background:rgba(255,255,255,0.94);
+          background:rgba(255,255,255,0.95);
           backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
           border:1.5px solid ${isBeingEdited ? '#F59E0B' : color};
           width:${size}px;height:${size}px;border-radius:50%;
@@ -303,7 +300,38 @@ function createPinIcon(
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
-   MAP CLICK HANDLER (for admin pin editor)
+   MAP AUTO-FIT CONTROLLER (Edge-to-Edge with Zero Letterboxing)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+function MapAutoFit({ bounds }: { bounds: L.LatLngBoundsExpression }) {
+  const map = useMap();
+
+  useEffect(() => {
+    map.invalidateSize();
+    map.fitBounds(bounds, {
+      padding: [0, 0],
+      animate: false,
+    });
+
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    if (isMobile) {
+      // Center the resort and gently elevate zoom so it fills width edge-to-edge
+      const targetZoom = map.getBoundsZoom(bounds, false) + 0.22;
+      map.setView([IMAGE_HEIGHT * 0.48, IMAGE_WIDTH * 0.52], targetZoom, { animate: false });
+    }
+
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 120);
+
+    return () => clearTimeout(timer);
+  }, [map, bounds]);
+
+  return null;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   MAP CLICK HANDLER (for admin pin calibration)
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 function MapClickHandler({
@@ -345,7 +373,7 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const toastTimer = useRef<NodeJS.Timeout | null>(null);
 
-  // Sync prop or check window.location.search on client mount as reliable fallback
+  // Sync prop or check window.location.search on mount
   useEffect(() => {
     if (propIsAdmin) {
       setIsAdmin(true);
@@ -439,11 +467,18 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
 
   /* ═════════════════════════════════════════════════════════════════════════ */
   return (
-    <div className="relative w-full h-[calc(100dvh-105px)] sm:h-[calc(100vh-130px)] min-h-[460px] sm:min-h-[520px] bg-[#141414] overflow-hidden rounded-none sm:rounded-3xl border-0 sm:border border-stone-800 shadow-none sm:shadow-2xl">
+    <div
+      className="fixed inset-0 w-screen h-[100dvh] overflow-hidden select-none"
+      style={{ backgroundColor: PARCHMENT_BG }}
+    >
 
-      {/* ── CATEGORY FILTER PILLS (Guest-facing) ─────────────────────────── */}
+      {/* ── CATEGORY FILTER PILLS (Floating below top bar) ───────────────── */}
       {!isEditorOpen && (
-        <div className="absolute top-2.5 sm:top-4 left-1/2 -translate-x-1/2 z-[500] flex items-center gap-1 bg-black/60 sm:bg-black/50 backdrop-blur-2xl p-1 rounded-xl sm:rounded-2xl border border-white/15 sm:border-white/10 shadow-xl overflow-x-auto max-w-[calc(100vw-16px)] sm:max-w-[calc(100vw-32px)] no-scrollbar">
+        <div
+          className={`fixed ${isAdmin ? 'top-22 sm:top-24' : 'top-16 sm:top-18'} left-1/2 -translate-x-1/2 z-30 flex items-center gap-1 bg-white/80 backdrop-blur-xl p-1 rounded-2xl border border-white/60 shadow-[0_8px_24px_rgba(0,0,0,0.06)] overflow-x-auto max-w-[calc(100vw-24px)] sm:max-w-2xl no-scrollbar pointer-events-auto transition-all duration-300`}
+          onMouseDown={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
+        >
           {FILTER_OPTIONS.map(({ key, label }) => {
             const isActive = activeFilter === key;
             const dotColor = key === 'All' ? undefined : CATEGORY_COLORS[key as PinCategory];
@@ -455,16 +490,16 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
                   setActiveFilter(key);
                   setSelected(null);
                 }}
-                className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-[11px] font-medium whitespace-nowrap transition-all duration-200 active:scale-95 ${
+                className={`apple-bounce flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-[10.5px] sm:text-[11.5px] font-semibold whitespace-nowrap transition-all duration-200 active:scale-[0.92] cursor-pointer ${
                   isActive
-                    ? 'bg-white text-stone-900 font-semibold shadow-sm'
-                    : 'text-white/65 hover:text-white/90'
+                    ? 'bg-stone-900 text-white shadow-xs'
+                    : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100/70'
                 }`}
               >
                 {dotColor && (
                   <span
-                    className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full shrink-0"
-                    style={{ background: dotColor, opacity: isActive ? 1 : 0.6 }}
+                    className="w-2 h-2 rounded-full shrink-0"
+                    style={{ background: dotColor }}
                   />
                 )}
                 <span>{label}</span>
@@ -476,12 +511,12 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
 
       {/* ── TOAST NOTIFICATION ───────────────────────────────────────────── */}
       {toastMsg && (
-        <div className="absolute top-12 sm:top-14 left-1/2 -translate-x-1/2 z-[1500] bg-stone-900/95 text-white px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-2xl border border-stone-700 text-[11px] sm:text-xs font-medium backdrop-blur-md max-w-[90vw] text-center truncate">
+        <div className="fixed top-26 sm:top-30 left-1/2 -translate-x-1/2 z-[1500] bg-stone-900/95 text-white px-4 py-2 rounded-full shadow-2xl border border-stone-700 text-xs font-medium backdrop-blur-md max-w-[90vw] text-center truncate pointer-events-none animate-in fade-in zoom-in-95 duration-150">
           {toastMsg}
         </div>
       )}
 
-      {/* ── ADMIN EDITOR BUTTON (admin only) ─────────────────────────────── */}
+      {/* ── ADMIN PIN EDITOR TOGGLE BUTTON (admin only) ──────────────────── */}
       {isAdmin && (
         <button
           type="button"
@@ -490,22 +525,22 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
             e.stopPropagation();
             setIsEditorOpen((p) => !p);
           }}
-          className={`absolute top-2.5 right-2.5 sm:top-4 sm:right-4 z-[1200] px-3 sm:px-3.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-semibold backdrop-blur-md transition-all shadow-lg flex items-center gap-1.5 active:scale-95 ${
+          className={`fixed top-16 sm:top-18 right-3 sm:right-6 z-[1200] px-3.5 py-1.5 rounded-full text-xs font-bold backdrop-blur-xl transition-all shadow-lg flex items-center gap-1.5 active:scale-95 cursor-pointer ${
             isEditorOpen
-              ? 'bg-amber-500 text-stone-950 font-bold border border-amber-400'
-              : 'bg-white/90 hover:bg-white text-stone-900 border border-stone-200'
+              ? 'bg-amber-500 text-stone-950 border border-amber-400'
+              : 'bg-white/90 hover:bg-white text-stone-900 border border-white/60'
           }`}
-          title="Toggle Pin Editor (Hotkey: E)"
+          title="Toggle Pin Placement Editor (Hotkey: E)"
         >
           <Edit3 className="w-3.5 h-3.5" />
-          <span>{isEditorOpen ? 'Exit Editor' : '🎯 Pin Editor'}</span>
+          <span>{isEditorOpen ? 'Exit' : '🎯 Pins'}</span>
         </button>
       )}
 
       {/* ── ADMIN PIN EDITOR PANEL (admin only) ──────────────────────────── */}
       {isAdmin && isEditorOpen && (
         <div
-          className="absolute top-2.5 left-2.5 right-2.5 sm:right-auto sm:top-4 sm:left-4 z-[1200] w-auto sm:w-80 max-w-[calc(100vw-20px)] sm:max-w-[calc(100vw-32px)] bg-stone-950/95 text-stone-100 rounded-2xl shadow-2xl border border-stone-800 backdrop-blur-xl p-3.5 sm:p-4 flex flex-col gap-2.5 sm:gap-3"
+          className="fixed top-22 sm:top-24 left-3 sm:left-6 z-[1200] w-[calc(100vw-24px)] sm:w-84 max-h-[calc(100vh-120px)] bg-stone-950/95 text-stone-100 rounded-3xl shadow-2xl border border-stone-800 backdrop-blur-2xl p-4 flex flex-col gap-3 overflow-y-auto"
           onMouseDown={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
           onDoubleClick={(e) => e.stopPropagation()}
@@ -516,28 +551,28 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
               <span className="text-xs font-serif font-bold text-white tracking-wide">
-                PIN PLACEMENT EDITOR
+                PIN CALIBRATOR
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <a
-                href="/admin"
-                className="text-[10px] text-amber-400 hover:text-amber-300 font-semibold underline"
-                title="Return to Manager Portal"
+              <span className="text-[10px] text-stone-400 font-mono">18 pins</span>
+              <button
+                type="button"
+                onClick={() => setIsEditorOpen(false)}
+                className="text-stone-400 hover:text-white p-1 rounded-full"
               >
-                GM Portal
-              </a>
-              <span className="text-[10px] text-stone-500 font-mono">· 18 pins</span>
+                <X className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
 
           <p className="text-[11px] text-stone-300 leading-snug">
-            1. Select a pin below.<br />
-            2. Tap anywhere on the map to place it.
+            1. Select a pin from the list.<br />
+            2. Tap anywhere on the masterplan to place it.
           </p>
 
           {/* Pin list */}
-          <div className="max-h-48 sm:max-h-60 overflow-y-auto space-y-1 pr-1">
+          <div className="max-h-48 sm:max-h-56 overflow-y-auto space-y-1 pr-1">
             {amenities.map((a) => {
               const active = a.id === editPinId;
               return (
@@ -546,7 +581,7 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
                   type="button"
                   onClick={() => {
                     setEditPinId(a.id);
-                    toast(`Selected Pin #${a.num} — ${a.title}`);
+                    toast(`Selected #${a.num} — ${a.title}`);
                   }}
                   className={`w-full text-left px-2.5 py-1.5 rounded-xl text-xs flex items-center justify-between transition-all border ${
                     active
@@ -571,7 +606,7 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
             })}
           </div>
 
-          {/* Active target */}
+          {/* Active target banner */}
           <div className="bg-amber-400/10 border border-amber-400/40 rounded-xl px-2.5 py-1.5 text-[11px] text-amber-300 flex items-center gap-2">
             <MapPin className="w-3.5 h-3.5 shrink-0 text-amber-400" />
             <span className="truncate">
@@ -584,23 +619,23 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
             <button
               type="button"
               onClick={handleCopyAll}
-              className="flex-1 bg-stone-800 hover:bg-stone-700 active:scale-95 text-white py-1.5 px-2 rounded-xl text-[11px] font-semibold transition flex items-center justify-center gap-1.5"
+              className="flex-1 bg-stone-800 hover:bg-stone-700 active:scale-95 text-white py-1.5 px-2 rounded-xl text-[11px] font-semibold transition flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <Copy className="w-3.5 h-3.5" />
-              <span>Copy</span>
+              <span>Copy JSON</span>
             </button>
             <button
               type="button"
               onClick={handleReset}
-              className="bg-stone-800 hover:bg-stone-700 active:scale-95 text-stone-400 hover:text-white py-1.5 px-2.5 rounded-xl text-[11px] font-medium transition"
-              title="Reset to defaults"
+              className="bg-stone-800 hover:bg-stone-700 active:scale-95 text-stone-400 hover:text-white py-1.5 px-2.5 rounded-xl text-[11px] font-medium transition cursor-pointer"
+              title="Reset all to defaults"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
             <button
               type="button"
               onClick={() => setIsEditorOpen(false)}
-              className="bg-stone-100 hover:bg-white text-stone-900 active:scale-95 py-1.5 px-3 rounded-xl text-[11px] font-bold transition flex items-center gap-1"
+              className="bg-stone-100 hover:bg-white text-stone-900 active:scale-95 py-1.5 px-3 rounded-xl text-[11px] font-bold transition flex items-center gap-1 cursor-pointer"
             >
               <Check className="w-3.5 h-3.5" />
               <span>Done</span>
@@ -609,21 +644,24 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
         </div>
       )}
 
-      {/* ── LEAFLET MAP ──────────────────────────────────────────────────── */}
+      {/* ── LEAFLET INFINITE ARCHITECTURAL CANVAS ───────────────────────── */}
       <MapContainer
         key="resort-masterplan-container"
         crs={L.CRS.Simple}
         bounds={bounds}
         maxBounds={bounds}
-        maxBoundsViscosity={1.0}
-        minZoom={-1}
-        maxZoom={2}
-        zoom={0}
+        maxBoundsViscosity={0.35}
+        minZoom={-0.5}
+        maxZoom={2.5}
+        zoomSnap={0.1}
+        zoomDelta={0.25}
+        wheelPxPerZoomLevel={120}
         center={[IMAGE_HEIGHT / 2, IMAGE_WIDTH / 2]}
-        className="w-full h-full"
-        style={{ background: '#141414', cursor: isEditorOpen ? 'crosshair' : 'grab' }}
+        className="w-full h-full resort-masterplan-map !bg-[#F5F3EC]"
+        style={{ backgroundColor: PARCHMENT_BG, cursor: isEditorOpen ? 'crosshair' : 'grab' }}
         attributionControl={false}
       >
+        <MapAutoFit bounds={bounds} />
         <ImageOverlay url="/resort-map.jpg" bounds={bounds} />
 
         <MapClickHandler
@@ -655,44 +693,49 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
         })}
       </MapContainer>
 
-      {/* ── GUEST HINT PILL ──────────────────────────────────────────────── */}
+      {/* ── FLOATING GUEST INSTRUCTION HINT ───────────────────────────────── */}
       {!isEditorOpen && !selected && (
-        <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-[500] bg-black/55 text-white/80 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-[11px] font-light backdrop-blur-md pointer-events-none border border-white/10 shadow-sm">
-          Pinch to Explore · Tap Any Pin
+        <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 bg-white/85 text-stone-800 px-4 py-2 rounded-full text-xs font-medium backdrop-blur-xl border border-white/60 shadow-[0_8px_24px_rgba(0,0,0,0.08)] pointer-events-none flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-stone-900 animate-pulse" />
+          <span>Pinch to Explore · Tap Any Pin</span>
         </div>
       )}
 
-      {/* ── GUEST BOTTOM SHEET (Frosted glass, iOS spring) ────────────── */}
+      {/* ── GUEST BOTTOM SHEET (Frosted glass, iOS spring physics) ───────── */}
       {!isEditorOpen && selected && (
         <>
-          {/* Backdrop for easy mobile dismissal */}
+          {/* Subtle mobile backdrop */}
           <div
-            className="fixed sm:hidden inset-0 z-[990] bg-black/30 backdrop-blur-[2px] transition-opacity animate-in fade-in duration-200"
+            className="fixed inset-0 z-[990] bg-black/20 backdrop-blur-[2px] transition-opacity animate-in fade-in duration-200"
             onClick={() => setSelected(null)}
           />
 
-          <div className="fixed sm:absolute bottom-0 sm:bottom-4 left-0 right-0 sm:left-4 sm:right-4 sm:max-w-sm sm:mx-auto z-[1000] ios-spring-sheet pb-[max(1rem,env(safe-area-inset-bottom))] sm:pb-0">
-            <div className="bg-white/95 sm:bg-white/85 backdrop-blur-2xl p-4 sm:p-5 rounded-t-3xl sm:rounded-3xl shadow-[0_-12px_40px_rgba(0,0,0,0.35)] sm:shadow-[0_20px_50px_rgba(0,0,0,0.25)] border-t sm:border border-white/50">
+          <div
+            className="fixed bottom-0 sm:bottom-6 left-0 right-0 sm:left-1/2 sm:-translate-x-1/2 sm:max-w-md w-full z-[1000] ios-spring-sheet pb-[max(1rem,env(safe-area-inset-bottom))] sm:pb-0 px-0 sm:px-4"
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="bg-white/92 backdrop-blur-2xl p-5 sm:p-6 rounded-t-3xl sm:rounded-3xl shadow-[0_-12px_40px_rgba(0,0,0,0.15)] sm:shadow-[0_20px_50px_rgba(0,0,0,0.2)] border-t sm:border border-white/60">
               {/* iOS Grab Handle */}
               <div
-                className="w-10 h-1 bg-stone-300 rounded-full mx-auto mb-3 cursor-pointer"
+                className="w-10 h-1 bg-stone-300 rounded-full mx-auto mb-3.5 cursor-pointer hover:bg-stone-400 transition"
                 onClick={() => setSelected(null)}
               />
 
               {/* Header */}
-              <div className="flex justify-between items-start mb-2">
-                <div className="flex items-center gap-2.5">
+              <div className="flex justify-between items-start mb-2.5">
+                <div className="flex items-center gap-3">
                   <span
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[11px] font-bold shrink-0 shadow-xs"
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-xs"
                     style={{ background: CATEGORY_COLORS[selected.category] }}
                   >
                     {selected.num}
                   </span>
                   <div>
-                    <span className="text-[9.5px] sm:text-[10px] tracking-widest uppercase font-semibold text-stone-500 bg-stone-100 px-2 sm:px-2.5 py-0.5 rounded-full border border-stone-200">
+                    <span className="text-[9.5px] sm:text-[10px] tracking-widest uppercase font-bold text-stone-500 bg-stone-100 px-2.5 py-0.5 rounded-full border border-stone-200">
                       {selected.category}
                     </span>
-                    <h3 className="text-sm sm:text-base font-serif font-bold text-stone-900 mt-1">
+                    <h3 className="text-base sm:text-lg font-serif font-bold text-stone-900 mt-1">
                       {selected.title}
                     </h3>
                   </div>
@@ -700,14 +743,14 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
                 <button
                   type="button"
                   onClick={() => setSelected(null)}
-                  className="p-1.5 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition active:scale-90"
+                  className="p-1.5 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition active:scale-90 cursor-pointer"
                   aria-label="Close"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <p className="text-xs text-stone-600 mb-4 leading-relaxed font-light">
+              <p className="text-xs sm:text-sm text-stone-600 mb-5 leading-relaxed font-light">
                 {selected.description}
               </p>
 
@@ -716,15 +759,16 @@ export default function ResortMasterplan({ isAdmin: propIsAdmin = false }: Resor
                 href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(selected.whatsAppMessage)}`}
                 target="_blank"
                 rel="noreferrer"
-                className="apple-bounce w-full flex items-center justify-center gap-2 bg-stone-900 hover:bg-stone-800 active:scale-[0.92] text-white text-xs font-semibold py-3.5 sm:py-3 rounded-2xl shadow-lg transition-all duration-200 min-h-[44px] cursor-pointer"
+                className="apple-bounce w-full flex items-center justify-center gap-2 bg-stone-900 hover:bg-stone-800 active:scale-[0.93] text-white text-xs sm:text-sm font-semibold py-3.5 rounded-2xl shadow-xl transition-all duration-200 min-h-[46px] cursor-pointer"
               >
-                <Phone className="w-3.5 h-3.5" />
+                <Phone className="w-4 h-4" />
                 <span>{selected.actionText}</span>
               </a>
             </div>
           </div>
         </>
       )}
+
     </div>
   );
 }

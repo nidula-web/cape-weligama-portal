@@ -2,18 +2,19 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useConcierge } from '@/context/ConciergeContext';
-import Navbar from '@/components/Navbar';
 import CategoryFilter from '@/components/CategoryFilter';
 import ListView from '@/components/ListView';
 import BottomSheet from '@/components/BottomSheet';
 import ViewSwitcher from '@/components/ViewSwitcher';
+import { Waves, ShieldCheck } from 'lucide-react';
 
 const ConciergeMap = dynamic(() => import('@/components/ConciergeMap'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full min-h-[500px] flex items-center justify-center bg-[#FAFAF8] text-stone-400 text-xs tracking-widest uppercase">
+    <div className="w-full h-full flex items-center justify-center bg-[#F5F3EC] text-stone-400 text-xs tracking-widest uppercase">
       Loading Coastal Guide…
     </div>
   ),
@@ -22,7 +23,7 @@ const ConciergeMap = dynamic(() => import('@/components/ConciergeMap'), {
 const ResortMasterplan = dynamic(() => import('@/components/ResortMasterplan'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full min-h-[500px] flex items-center justify-center bg-[#FAFAF8] text-stone-400 text-xs tracking-widest uppercase">
+    <div className="w-full h-full flex items-center justify-center bg-[#F5F3EC] text-stone-400 text-xs tracking-widest uppercase">
       Loading Resort Masterplan…
     </div>
   ),
@@ -58,7 +59,7 @@ function SearchParamsHandler({
 type Domain = 'resort' | 'coast';
 
 export default function Home() {
-  const { viewMode } = useConcierge();
+  const { viewMode, isLockedGuestMode } = useConcierge();
   const [domain, setDomain] = useState<Domain>('resort');
   const [isAdminMode, setIsAdminMode] = useState<boolean>(false);
   const [mounted, setMounted] = useState(false);
@@ -69,95 +70,134 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-[100dvh] bg-[#FAFAF8] text-stone-900 flex flex-col selection:bg-stone-900/10 overscroll-none">
+    <div className="fixed inset-0 w-screen h-[100dvh] overflow-hidden bg-[#F5F3EC] text-stone-900 select-none overscroll-none">
 
       {/* URL param sync */}
       <Suspense fallback={null}>
         <SearchParamsHandler setDomain={setDomain} setIsAdminMode={setIsAdminMode} />
       </Suspense>
 
-      {/* Admin Mode Quick Bar (when ?admin=true is active) */}
+      {/* ── Admin Mode Floating Bar (only when ?admin=true) ─────────────── */}
       {isAdminMode && (
-        <div className="bg-amber-500 text-stone-950 px-3 py-1.5 text-xs font-semibold flex items-center justify-between z-50 shadow-sm border-b border-amber-600">
+        <div className="fixed top-2 left-1/2 -translate-x-1/2 z-50 max-w-md w-[calc(100vw-24px)] sm:w-auto bg-amber-500/95 text-stone-950 px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center justify-between gap-3 shadow-xl border border-amber-600/40 backdrop-blur-md">
           <div className="flex items-center gap-2 truncate">
             <span className="w-2 h-2 rounded-full bg-stone-950 animate-ping shrink-0" />
-            <span className="truncate">ADMIN MODE ACTIVE: Resort Masterplan Pin Calibration</span>
+            <span className="truncate text-[11px] font-bold">Admin Pin Calibration Active</span>
           </div>
-          <a
+          <Link
             href="/admin"
-            className="shrink-0 bg-stone-950 text-white px-2.5 py-0.5 rounded-full text-[10.5px] font-bold hover:bg-stone-800 transition-all ml-2"
+            className="shrink-0 bg-stone-950 text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold hover:bg-stone-800 transition-all ml-1"
           >
-            ← Back to GM Portal
-          </a>
+            GM Portal
+          </Link>
         </div>
       )}
 
-      {/* ── Top Navbar ───────────────────────────────────────────────── */}
-      <Navbar />
+      {/* ── Unified Floating Apple-Style Luxury Top Bar ─────────────────── */}
+      <div className={`fixed ${isAdminMode ? 'top-10 sm:top-11' : 'top-3 sm:top-4'} left-3 right-3 sm:left-6 sm:right-6 max-w-5xl mx-auto z-40 pointer-events-auto transition-all duration-300`}>
+        <div className="bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.08)] rounded-2xl sm:rounded-full px-3 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between gap-2 sm:gap-3">
 
-      {/* ── Dual Domain Toggle ───────────────────────────────────────── */}
-      <div className="sticky top-13 sm:top-16 z-30 bg-[#FAFAF8]/96 backdrop-blur-md border-b border-stone-200">
-        <div className="flex justify-center py-2 sm:py-2.5 px-3 sm:px-4">
-          <div className="inline-flex items-center bg-stone-100 p-[2.5px] sm:p-[3px] rounded-full border border-stone-200 shadow-xs max-w-full">
+          {/* Left: Resort Brand */}
+          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-stone-900 text-[#FAFAF8] flex items-center justify-center shadow-xs shrink-0">
+              <Waves className="w-3.5 h-3.5 stroke-[1.75]" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-[11px] sm:text-sm font-serif font-bold tracking-tight text-stone-900 leading-tight truncate">
+                CAPE WELIGAMA
+              </h1>
+              <p className="text-[7.5px] sm:text-[9px] font-semibold tracking-[0.16em] uppercase text-stone-400 leading-tight truncate">
+                Relais &amp; Châteaux
+              </p>
+            </div>
+          </div>
+
+          {/* Center: Minimalist Segmented Toggle */}
+          <div className="inline-flex items-center bg-stone-100/90 p-[2.5px] rounded-full border border-stone-200/60 shadow-inner">
             <button
               type="button"
               onClick={() => setDomain('resort')}
-              className={`apple-bounce flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 rounded-full text-[10.5px] sm:text-[11px] font-semibold tracking-wide transition-all duration-300 whitespace-nowrap active:scale-[0.88] cursor-pointer ${
+              className={`apple-bounce flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-[11px] font-semibold tracking-wide transition-all duration-200 whitespace-nowrap active:scale-[0.92] cursor-pointer ${
                 domain === 'resort'
-                  ? 'bg-stone-900 text-white shadow-sm scale-[1.02]'
+                  ? 'bg-stone-900 text-white shadow-xs scale-[1.02]'
                   : 'text-stone-500 hover:text-stone-800'
               }`}
             >
               <span>📍</span>
               <span className="inline sm:hidden">Grounds</span>
               <span className="hidden sm:inline">Resort Grounds</span>
-              <span className="hidden md:inline text-[9px] font-normal opacity-70">(12 Acres)</span>
             </button>
             <button
               type="button"
               onClick={() => setDomain('coast')}
-              className={`apple-bounce flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 rounded-full text-[10.5px] sm:text-[11px] font-semibold tracking-wide transition-all duration-300 whitespace-nowrap active:scale-[0.88] cursor-pointer ${
+              className={`apple-bounce flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-[11px] font-semibold tracking-wide transition-all duration-200 whitespace-nowrap active:scale-[0.92] cursor-pointer ${
                 domain === 'coast'
-                  ? 'bg-stone-900 text-white shadow-sm scale-[1.02]'
+                  ? 'bg-stone-900 text-white shadow-xs scale-[1.02]'
                   : 'text-stone-500 hover:text-stone-800'
               }`}
             >
               <span>🌊</span>
-              <span className="inline sm:hidden">Coast Guide</span>
-              <span className="hidden sm:inline">Explore South Coast</span>
+              <span className="inline sm:hidden">Coast</span>
+              <span className="hidden sm:inline">Explore Coast</span>
             </button>
           </div>
-        </div>
 
-        {/* Category filter — only shown in Coastal view, rendered in-flow to avoid shift */}
-        <div
-          className="overflow-hidden transition-all duration-200"
-          style={{ maxHeight: domain === 'coast' ? '60px' : '0px', opacity: domain === 'coast' ? 1 : 0 }}
-        >
-          <CategoryFilter />
+          {/* Right: Guest mode badge or GM link */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {isLockedGuestMode ? (
+              <span className="inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 text-[8.5px] sm:text-[9.5px] font-medium rounded-full bg-stone-900/5 text-stone-600 border border-stone-200/80">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="hidden xs:inline">Concierge</span>
+              </span>
+            ) : (
+              <Link
+                href="/admin"
+                className="flex items-center gap-1 px-2 sm:px-2.5 py-1 text-[9.5px] sm:text-[10px] font-medium rounded-full bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-200/80 transition-all active:scale-95"
+                title="Open Hotel Management Portal"
+              >
+                <ShieldCheck className="w-3 h-3 text-stone-600" />
+                <span className="hidden md:inline">GM Portal</span>
+              </Link>
+            )}
+          </div>
+
         </div>
       </div>
 
-      {/* ── Main Content ─────────────────────────────────────────────── */}
-      <main className="flex-1 relative flex flex-col">
+      {/* ── Category Filter for Coastal Guide (Floating underneath top bar) ─ */}
+      {domain === 'coast' && (
+        <div className={`fixed ${isAdminMode ? 'top-23 sm:top-25' : 'top-16 sm:top-18'} left-1/2 -translate-x-1/2 z-30 max-w-[calc(100vw-24px)] transition-all duration-300 pointer-events-auto`}>
+          <div className="bg-white/80 backdrop-blur-xl border border-white/60 rounded-2xl shadow-lg p-1">
+            <CategoryFilter />
+          </div>
+        </div>
+      )}
+
+      {/* ── Edge-to-Edge Full-Bleed Canvas ─────────────────────────────── */}
+      <main className="w-full h-full relative">
         {!mounted ? (
-          <div className="w-full flex-1 min-h-[460px] flex items-center justify-center bg-[#FAFAF8] text-stone-400 text-xs tracking-widest uppercase">
+          <div className="w-full h-full flex items-center justify-center bg-[#F5F3EC] text-stone-400 text-xs tracking-widest uppercase">
             Loading…
           </div>
         ) : domain === 'resort' ? (
           <ResortMasterplan isAdmin={isAdminMode} />
         ) : viewMode === 'map' ? (
-          <ConciergeMap />
+          <div className="w-full h-full">
+            <ConciergeMap />
+          </div>
         ) : (
-          <ListView />
+          <div className="w-full h-full overflow-y-auto pt-24 sm:pt-28 pb-24 bg-[#FAFAF8]">
+            <ListView />
+          </div>
         )}
       </main>
 
-      {/* ── Global Bottom Sheet (works for both domains) ─────────────── */}
+      {/* ── Global Bottom Sheet ────────────────────────────────────────── */}
       <BottomSheet />
 
-      {/* ── View Switcher — only for Coastal guide ───────────────────── */}
+      {/* ── View Switcher for Coastal Guide ────────────────────────────── */}
       {domain === 'coast' && mounted && <ViewSwitcher />}
+
     </div>
   );
 }
