@@ -179,8 +179,8 @@ export default function ConciergeMap() {
   const [recenterTrigger, setRecenterTrigger] = useState(0);
 
   // Cape Weligama GPS — fixed center for the coastal guide
-  const hotelLat = property.lat || 5.9680;
-  const hotelLng = property.lng || 80.4320;
+  const hotelLat = property.lat || 5.9684;
+  const hotelLng = property.lng || 80.4195;
 
   // Center map on Cape Weligama
   const centerPosition: [number, number] = [hotelLat, hotelLng];
