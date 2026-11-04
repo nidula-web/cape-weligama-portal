@@ -6,12 +6,12 @@ export const CAPE_WELIGAMA: Property = {
   slug: 'cape-weligama',
   aliases: ['cape-weligama', 'capeweligama', 'cape', 'cw'],
   name: 'Cape Weligama',
-  location: 'Weligama Headland, Southern Sri Lanka',
-  lat: 5.9680,
-  lng: 80.4320,
-  tagline: 'Relais & Châteaux — Iconic clifftop luxury retreat above the southern surf coast',
+  location: 'Clifftop Headland, Cape Weligama, Abimanagama Rd, Weligama',
+  lat: 5.9684,
+  lng: 80.4195,
+  tagline: 'Relais & Châteaux — 12-Acre Cliffside Estate',
   welcomeMessage:
-    'Welcome to Cape Weligama. Our concierge team has handpicked every experience below — from world-class surf breaks to candlelit heritage dinners. Simply tap any spot to dispatch a WhatsApp request.',
+    'Welcome to Cape Weligama. Your private ocean promontory sanctuary. Our concierge team has handpicked every experience below — from world-class surf breaks to candlelit heritage dinners. Simply tap any spot to dispatch a WhatsApp request.',
   vipRef: 'CAPE',
 };
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMap, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useConcierge } from '@/context/ConciergeContext';
@@ -125,7 +125,7 @@ function createLuxuryVendorIcon(spot: Spot, isSelected: boolean): L.DivIcon {
 // Living "YOU ARE HERE" Hotel Beacon (Obsidian & Warm Brass Medallion + Radar Pulse)
 function createHotelBeaconIcon(hotelName: string): L.DivIcon {
   const html = `
-    <div class="relative flex flex-col items-center justify-center -translate-x-1/2 -translate-y-1/2 cursor-pointer group" style="touch-action: manipulation;" title="You Are Here · ${hotelName}">
+    <div class="relative flex flex-col items-center justify-center -translate-x-1/2 -translate-y-1/2 cursor-pointer group" style="touch-action: manipulation;" title="You Are Here: Cape Weligama">
       
       <!-- Multi-Tiered Living Radar Radiance -->
       <div class="absolute w-24 h-24 -top-12 -left-12 rounded-full pointer-events-none flex items-center justify-center">
@@ -134,8 +134,8 @@ function createHotelBeaconIcon(hotelName: string): L.DivIcon {
         <span class="absolute w-8 h-8 rounded-full bg-[#1E3A2B]/40 blur-xs"></span>
       </div>
 
-      <!-- Main Luxury Badge Capsule with Apple bounce -->
-      <div class="apple-bounce relative z-10 flex items-center gap-2 bg-gradient-to-r from-[#181816] via-[#20201E] to-[#181816] text-white px-3 sm:px-3.5 py-1.5 rounded-full shadow-[0_10px_28px_rgba(0,0,0,0.45)] border border-[#C5A880] ring-1 ring-white/20 whitespace-nowrap">
+      <!-- Main Luxury Badge Capsule with Apple smooth response -->
+      <div class="apple-bounce relative z-10 flex items-center gap-2 bg-gradient-to-r from-[#181816] via-[#20201E] to-[#181816] text-white px-3.5 py-1.5 rounded-full shadow-[0_10px_28px_rgba(0,0,0,0.45)] border border-[#C5A880] ring-1 ring-white/20 whitespace-nowrap">
         
         <!-- Golden Villa Crest Icon -->
         <span class="w-5 h-5 rounded-full bg-[#C5A880]/25 border border-[#C5A880]/70 flex items-center justify-center text-[#EADBBE] shrink-0 shadow-xs">
@@ -146,8 +146,8 @@ function createHotelBeaconIcon(hotelName: string): L.DivIcon {
         </span>
 
         <!-- Distinctive Label -->
-        <span class="text-[9.5px] sm:text-[10.5px] font-semibold tracking-[0.2em] uppercase text-white font-sans">
-          CAPE WELIGAMA
+        <span class="text-[9.5px] sm:text-[10.5px] font-semibold tracking-[0.16em] uppercase text-white font-sans">
+          YOU ARE HERE: CAPE WELIGAMA
         </span>
 
         <!-- Breathing Emerald Live Indicator -->
@@ -178,11 +178,11 @@ export default function ConciergeMap() {
   const [mapStyle, setMapStyle] = useState<'street' | 'satellite'>('street');
   const [recenterTrigger, setRecenterTrigger] = useState(0);
 
-  // Cape Weligama GPS — fixed center for the coastal guide
+  // Exact verified cliffhead GPS coordinates: Clifftop Headland, Cape Weligama
   const hotelLat = property.lat || 5.9684;
   const hotelLng = property.lng || 80.4195;
 
-  // Center map on Cape Weligama
+  // Center map on Cape Weligama cliffhead
   const centerPosition: [number, number] = [hotelLat, hotelLng];
 
   // Pre-generate marker icons for performance
@@ -241,7 +241,7 @@ export default function ConciergeMap() {
       <MapContainer
         key="concierge-coastal-map"
         center={centerPosition}
-        zoom={12}
+        zoom={13}
         minZoom={10}
         maxZoom={21}
         scrollWheelZoom={true}
@@ -272,7 +272,7 @@ export default function ConciergeMap() {
           centerPosition={centerPosition}
         />
 
-        {/* Living "YOU ARE HERE" Hotel Beacon */}
+        {/* Living "YOU ARE HERE" Hotel Beacon sitting exactly at [5.9684, 80.4195] */}
         <Marker
           position={[hotelLat, hotelLng]}
           icon={hotelBeaconIcon}
@@ -282,7 +282,24 @@ export default function ConciergeMap() {
               setRecenterTrigger((p) => p + 1);
             },
           }}
-        />
+        >
+          <Popup className="apple-resort-popup" closeButton={false}>
+            <div className="p-3.5 text-stone-900 min-w-[240px]">
+              <span className="text-[9px] font-bold tracking-widest uppercase text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                You Are Here
+              </span>
+              <h4 className="font-serif font-bold text-base text-stone-900 mt-2">
+                Cape Weligama
+              </h4>
+              <p className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider mt-0.5">
+                Relais &amp; Châteaux — 12-Acre Cliffside Estate
+              </p>
+              <p className="text-xs text-stone-600 mt-2 font-light leading-relaxed">
+                Your private ocean promontory sanctuary.
+              </p>
+            </div>
+          </Popup>
+        </Marker>
 
         {/* Vibrant Luxury Curated Vendor Markers */}
         {filteredSpots.map((spot) => (
