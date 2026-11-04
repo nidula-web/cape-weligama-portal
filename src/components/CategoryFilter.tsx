@@ -40,9 +40,9 @@ export default function CategoryFilter() {
               <button
                 key={key}
                 onClick={() => setCategoryFilter(key)}
-                className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-medium whitespace-nowrap transition-all duration-200 border shrink-0 active:scale-95 ${
+                className={`apple-bounce flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-medium whitespace-nowrap transition-all duration-300 border shrink-0 active:scale-[0.88] cursor-pointer ${
                   isSelected
-                    ? 'bg-[#1E3A2B] text-white border-[#1E3A2B] shadow-sm'
+                    ? 'bg-[#1E3A2B] text-white border-[#1E3A2B] shadow-sm scale-[1.03]'
                     : 'bg-white text-[#706E6B] border-[#E5E4E0] hover:text-[#1A1A1A] hover:border-[#1A1A1A]/30'
                 }`}
               >

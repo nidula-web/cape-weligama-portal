@@ -94,8 +94,61 @@ body {
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   Apple-Style Fluid Micro-Interactions & Physics (60fps GPU Accelerated)
+   Apple-Style Fluid Micro-Interactions, Spring Physics & Jiggle (60fps)
    ───────────────────────────────────────────────────────────────────────────── */
+
+/* Apple Spring Scale Punch & Elastic Jiggle */
+.apple-bounce {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease-out;
+  will-change: transform;
+}
+
+.apple-bounce:hover {
+  transform: scale(1.06) translateY(-1px);
+}
+
+.apple-bounce:active {
+  transform: scale(0.88) !important;
+  transition-duration: 0.12s !important;
+}
+
+/* Playful Apple Jiggle on Pin Selection */
+@keyframes appleJiggleBounce {
+  0% { transform: scale(1) rotate(0deg); }
+  22% { transform: scale(0.86) rotate(-5deg); }
+  45% { transform: scale(1.18) rotate(4deg); }
+  65% { transform: scale(0.94) rotate(-2deg); }
+  82% { transform: scale(1.06) rotate(1deg); }
+  100% { transform: scale(1.08) rotate(0deg); }
+}
+
+.pin-jiggle-active {
+  animation: appleJiggleBounce 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  transform-origin: center bottom;
+}
+
+/* Pop-in Spring Animation for newly filtered or mounted markers */
+@keyframes applePopIn {
+  0% {
+    transform: scale(0.4) translateY(12px);
+    opacity: 0;
+  }
+  65% {
+    transform: scale(1.12) translateY(-2px);
+    opacity: 1;
+  }
+  85% {
+    transform: scale(0.96) translateY(1px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.apple-pop-in {
+  animation: applePopIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
 
 /* The "Water Droplet" Ripple (Pool Pin Animation) */
 @keyframes waterDropletRipple {
@@ -131,36 +184,62 @@ body {
 
 /* Tactile Pin Scale Punch & Elevation */
 .apple-pin-badge {
-  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease-out;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease-out;
   will-change: transform;
 }
 
 .apple-pin-badge:hover {
-  transform: scale(1.08) translateY(-1px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22) !important;
+  transform: scale(1.1) translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24) !important;
 }
 
 .apple-pin-badge:active {
-  transform: scale(0.90) !important;
-  transition-duration: 150ms !important;
-  transition-timing-function: ease-out !important;
+  transform: scale(0.86) !important;
+  transition-duration: 120ms !important;
+  transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
 
-/* iOS Spring Drawer Animation (cubic-bezier(0.16, 1, 0.3, 1)) */
+/* iOS Bouncy Spring Drawer Animation (with natural overshoot bounce) */
 @keyframes iosDrawerSpring {
   0% {
-    transform: translateY(32px);
+    transform: translateY(100%) scale(0.95);
     opacity: 0;
   }
+  60% {
+    transform: translateY(-8px) scale(1.01);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(3px) scale(0.997);
+  }
   100% {
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
     opacity: 1;
   }
 }
 
 .ios-spring-sheet {
-  animation: iosDrawerSpring 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: iosDrawerSpring 0.48s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   will-change: transform, opacity;
+}
+
+/* Radar beacon pulse for Cape Weligama on South Coast Map */
+@keyframes beaconSonar {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+.beacon-sonar-ring {
+  animation: beaconSonar 2.8s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
 }
 
 /* Pool pin ripple — used inside Leaflet DivIcon HTML */

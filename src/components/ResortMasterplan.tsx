@@ -264,7 +264,7 @@ function createPinIcon(
   return L.divIcon({
     className: 'numbered-luxury-pin',
     html: `
-      <div style="position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;transform:translate(-50%,-50%);touch-action:manipulation;">
+      <div class="${isSelected ? 'pin-jiggle-active' : ''}" style="position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;transform:translate(-50%,-50%);touch-action:manipulation;">
         ${isPool && isSelected ? `
           <div style="position:absolute;width:${size}px;height:${size}px;border-radius:50%;border:2px solid ${color};animation:poolRipple 2.2s cubic-bezier(0.2,0.8,0.2,1) infinite;pointer-events:none;"></div>
           <div style="position:absolute;width:${size}px;height:${size}px;border-radius:50%;border:1.5px solid ${color};animation:poolRipple 2.2s cubic-bezier(0.2,0.8,0.2,1) infinite;animation-delay:0.7s;pointer-events:none;"></div>
@@ -675,12 +675,12 @@ export default function ResortMasterplan() {
                 {selected.description}
               </p>
 
-              {/* WhatsApp Action Button with 44px min tap height */}
+              {/* WhatsApp Action Button with Apple Bouncy Spring */}
               <a
                 href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(selected.whatsAppMessage)}`}
                 target="_blank"
                 rel="noreferrer"
-                className="w-full flex items-center justify-center gap-2 bg-stone-900 hover:bg-stone-800 active:scale-[0.98] text-white text-xs font-semibold py-3.5 sm:py-3 rounded-2xl shadow-lg transition-all duration-150 min-h-[44px]"
+                className="apple-bounce w-full flex items-center justify-center gap-2 bg-stone-900 hover:bg-stone-800 active:scale-[0.92] text-white text-xs font-semibold py-3.5 sm:py-3 rounded-2xl shadow-lg transition-all duration-200 min-h-[44px] cursor-pointer"
               >
                 <Phone className="w-3.5 h-3.5" />
                 <span>{selected.actionText}</span>

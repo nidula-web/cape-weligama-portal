@@ -13,9 +13,9 @@ export default function ViewSwitcher() {
         <button
           type="button"
           onClick={() => setViewMode('map')}
-          className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-medium transition-all duration-200 active:scale-95 ${
+          className={`apple-bounce flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-medium transition-all duration-300 active:scale-[0.88] cursor-pointer ${
             viewMode === 'map'
-              ? 'bg-[#FAFAF8] text-[#1A1A1A] shadow-sm font-semibold'
+              ? 'bg-[#FAFAF8] text-[#1A1A1A] shadow-sm font-semibold scale-[1.03]'
               : 'text-[#D1CFCA] hover:text-white'
           }`}
           aria-label="Switch to Map View"
@@ -27,9 +27,9 @@ export default function ViewSwitcher() {
         <button
           type="button"
           onClick={() => setViewMode('list')}
-          className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-medium transition-all duration-200 active:scale-95 ${
+          className={`apple-bounce flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-medium transition-all duration-300 active:scale-[0.88] cursor-pointer ${
             viewMode === 'list'
-              ? 'bg-[#FAFAF8] text-[#1A1A1A] shadow-sm font-semibold'
+              ? 'bg-[#FAFAF8] text-[#1A1A1A] shadow-sm font-semibold scale-[1.03]'
               : 'text-[#D1CFCA] hover:text-white'
           }`}
           aria-label="Switch to List View"

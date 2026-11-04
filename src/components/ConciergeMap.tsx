@@ -6,19 +6,37 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useConcierge } from '@/context/ConciergeContext';
 import { Spot } from '@/types';
+import { Compass } from 'lucide-react';
 
-// Map controller to smoothly fly to the selected spot or hotel
-function MapViewController({ selectedSpot }: { selectedSpot: Spot | null }) {
+// Map controller to smoothly fly with Apple-like spring easing
+function MapViewController({
+  selectedSpot,
+  recenterTrigger,
+  centerPosition,
+}: {
+  selectedSpot: Spot | null;
+  recenterTrigger: number;
+  centerPosition: [number, number];
+}) {
   const map = useMap();
 
   useEffect(() => {
     if (selectedSpot) {
       map.flyTo([selectedSpot.lat, selectedSpot.lng], 14, {
-        duration: 0.8,
-        easeLinearity: 0.25,
+        duration: 0.9,
+        easeLinearity: 0.18,
       });
     }
   }, [selectedSpot, map]);
+
+  useEffect(() => {
+    if (recenterTrigger > 0) {
+      map.flyTo(centerPosition, 13, {
+        duration: 1.1,
+        easeLinearity: 0.18,
+      });
+    }
+  }, [recenterTrigger, centerPosition, map]);
 
   return null;
 }
@@ -62,22 +80,22 @@ const CATEGORY_STYLES: Record<string, CategoryStyle> = {
   },
 };
 
-// High-Contrast Luxury Enamelled Vendor Pin (40px badge + needle drop + frosted name pill)
+// High-Contrast Luxury Enamelled Vendor Pin with Apple Bouncy Jiggle & Touch Area
 function createLuxuryVendorIcon(spot: Spot, isSelected: boolean): L.DivIcon {
   const config = CATEGORY_STYLES[spot.category] || CATEGORY_STYLES['Secret Spots'];
 
   const html = `
-    <div class="relative flex flex-col items-center justify-center -translate-x-1/2 -translate-y-1/2 group cursor-pointer" title="${spot.name}">
+    <div class="relative flex flex-col items-center justify-center -translate-x-1/2 -translate-y-1/2 cursor-pointer ${isSelected ? 'pin-jiggle-active z-50' : 'group'}" style="touch-action: manipulation; width: 50px; height: 60px;" title="${spot.name}">
       
       <!-- Ambient Outer Glow on Hover / Active -->
-      <div class="absolute -top-1 -left-1 w-12 h-12 rounded-full pointer-events-none flex items-center justify-center">
-        <span class="w-12 h-12 rounded-full ${config.glowClass} ${isSelected ? 'opacity-90 scale-125 animate-pulse' : 'opacity-0 group-hover:opacity-60 transition-all duration-300'}"></span>
+      <div class="absolute -top-1 -left-1 w-14 h-14 rounded-full pointer-events-none flex items-center justify-center">
+        <span class="w-14 h-14 rounded-full ${config.glowClass} ${isSelected ? 'opacity-95 scale-125 animate-pulse' : 'opacity-0 group-hover:opacity-60 transition-all duration-300'}"></span>
       </div>
 
-      <!-- 40px Luxury Enamelled Circular Badge -->
-      <div class="relative z-10 w-10 h-10 rounded-full flex items-center justify-center ${config.bgGradient} text-white border-2 border-white/95 shadow-[0_8px_24px_rgba(0,0,0,0.32),0_2px_6px_rgba(0,0,0,0.18)] hover:scale-110 transition-all duration-300 ${isSelected ? 'ring-4 ring-[#C5A880] scale-110 shadow-2xl' : ''}">
+      <!-- 40px Luxury Enamelled Circular Badge with Apple bounce -->
+      <div class="apple-bounce relative z-10 w-10 h-10 rounded-full flex items-center justify-center ${config.bgGradient} text-white border-2 border-white/95 shadow-[0_8px_24px_rgba(0,0,0,0.32),0_2px_6px_rgba(0,0,0,0.18)] ${isSelected ? 'ring-4 ring-[#C5A880] scale-115 shadow-2xl' : ''}">
         <!-- Subtle Ceramic Sheen -->
-        <div class="absolute inset-0 rounded-full bg-gradient-to-b from-white/25 via-transparent to-black/15 pointer-events-none"></div>
+        <div class="absolute inset-0 rounded-full bg-gradient-to-b from-white/30 via-transparent to-black/15 pointer-events-none"></div>
         <div class="relative z-10 drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]">
           ${config.iconSvg}
         </div>
@@ -90,7 +108,7 @@ function createLuxuryVendorIcon(spot: Spot, isSelected: boolean): L.DivIcon {
       <!-- Floating Frosted Name Pill -->
       <div class="relative z-20 mt-1 bg-[#FAFAF8]/95 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-[#E5E4E0] shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center gap-1.5 whitespace-nowrap pointer-events-none transition-all duration-200 ${isSelected ? 'ring-1 ring-[#1E3A2B] scale-105 opacity-100 shadow-md font-bold' : 'opacity-90 group-hover:opacity-100 group-hover:scale-105'}">
         <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background-color: ${config.accentHex};"></span>
-        <span class="text-[10px] font-semibold text-[#1A1A1A] tracking-tight font-serif">${spot.name}</span>
+        <span class="text-[9.5px] sm:text-[10px] font-semibold text-[#1A1A1A] tracking-tight font-serif">${spot.name}</span>
       </div>
 
     </div>
@@ -104,20 +122,20 @@ function createLuxuryVendorIcon(spot: Spot, isSelected: boolean): L.DivIcon {
   });
 }
 
-// Living "YOU ARE HERE" Hotel Beacon (Obsidian & Warm Brass Medallion + Radiant Aura)
+// Living "YOU ARE HERE" Hotel Beacon (Obsidian & Warm Brass Medallion + Radar Pulse)
 function createHotelBeaconIcon(hotelName: string): L.DivIcon {
   const html = `
-    <div class="relative flex flex-col items-center justify-center -translate-x-1/2 -translate-y-1/2 cursor-pointer group" title="You Are Here · ${hotelName}">
+    <div class="relative flex flex-col items-center justify-center -translate-x-1/2 -translate-y-1/2 cursor-pointer group" style="touch-action: manipulation;" title="You Are Here · ${hotelName}">
       
-      <!-- Multi-Tiered Ambient Radar Radiance -->
-      <div class="absolute w-20 h-20 -top-10 -left-10 rounded-full pointer-events-none flex items-center justify-center">
-        <span class="absolute w-16 h-16 rounded-full bg-[#C5A880]/25 animate-ping [animation-duration:3s]"></span>
-        <span class="absolute w-12 h-12 rounded-full bg-emerald-500/20 animate-pulse [animation-duration:2s]"></span>
-        <span class="absolute w-7 h-7 rounded-full bg-[#1E3A2B]/40 blur-xs"></span>
+      <!-- Multi-Tiered Living Radar Radiance -->
+      <div class="absolute w-24 h-24 -top-12 -left-12 rounded-full pointer-events-none flex items-center justify-center">
+        <span class="beacon-sonar-ring absolute w-16 h-16 rounded-full bg-[#C5A880]/30 border border-[#C5A880]/50"></span>
+        <span class="beacon-sonar-ring absolute w-16 h-16 rounded-full bg-emerald-500/25 border border-emerald-400/40" style="animation-delay: 1.4s;"></span>
+        <span class="absolute w-8 h-8 rounded-full bg-[#1E3A2B]/40 blur-xs"></span>
       </div>
 
-      <!-- Main Luxury Badge Capsule -->
-      <div class="relative z-10 flex items-center gap-2 bg-gradient-to-r from-[#181816] via-[#20201E] to-[#181816] text-white px-3.5 py-1.5 rounded-full shadow-[0_10px_28px_rgba(0,0,0,0.45)] border border-[#C5A880] ring-1 ring-white/20 whitespace-nowrap hover:scale-105 transition-all duration-300">
+      <!-- Main Luxury Badge Capsule with Apple bounce -->
+      <div class="apple-bounce relative z-10 flex items-center gap-2 bg-gradient-to-r from-[#181816] via-[#20201E] to-[#181816] text-white px-3 sm:px-3.5 py-1.5 rounded-full shadow-[0_10px_28px_rgba(0,0,0,0.45)] border border-[#C5A880] ring-1 ring-white/20 whitespace-nowrap">
         
         <!-- Golden Villa Crest Icon -->
         <span class="w-5 h-5 rounded-full bg-[#C5A880]/25 border border-[#C5A880]/70 flex items-center justify-center text-[#EADBBE] shrink-0 shadow-xs">
@@ -128,8 +146,8 @@ function createHotelBeaconIcon(hotelName: string): L.DivIcon {
         </span>
 
         <!-- Distinctive Label -->
-        <span class="text-[10.5px] font-semibold tracking-[0.22em] uppercase text-white font-sans">
-          YOU ARE HERE
+        <span class="text-[9.5px] sm:text-[10.5px] font-semibold tracking-[0.2em] uppercase text-white font-sans">
+          CAPE WELIGAMA
         </span>
 
         <!-- Breathing Emerald Live Indicator -->
@@ -158,6 +176,7 @@ function createHotelBeaconIcon(hotelName: string): L.DivIcon {
 export default function ConciergeMap() {
   const { property, filteredSpots, selectedSpot, setSelectedSpot } = useConcierge();
   const [mapStyle, setMapStyle] = useState<'street' | 'satellite'>('street');
+  const [recenterTrigger, setRecenterTrigger] = useState(0);
 
   // Cape Weligama GPS — fixed center for the coastal guide
   const hotelLat = property.lat || 5.9680;
@@ -180,14 +199,25 @@ export default function ConciergeMap() {
   }, [property.name]);
 
   return (
-    <div className="relative w-full h-[calc(100dvh-105px)] sm:h-[calc(100vh-126px)] min-h-[460px] sm:min-h-[500px]">
+    <div className="relative w-full h-[calc(100dvh-105px)] sm:h-[calc(100vh-126px)] min-h-[460px] sm:min-h-[500px] overflow-hidden">
       
-      {/* Sleek Minimalist Luxury Layer Switcher (Bottom-Left, raised on mobile to clear bottom switcher) */}
+      {/* Floating Recenter Compass Pill (Mobile & Desktop with Apple Spring Bounce) */}
+      <button
+        type="button"
+        onClick={() => setRecenterTrigger((p) => p + 1)}
+        className="apple-bounce absolute top-3 right-3 sm:top-4 sm:right-6 z-[400] flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-md border border-[#E5E4E0] shadow-md text-stone-800 text-[10.5px] sm:text-[11px] font-medium active:scale-90 transition-all cursor-pointer"
+        title="Recenter Map on Cape Weligama"
+      >
+        <Compass className="w-3.5 h-3.5 text-[#C5A880] animate-spin [animation-duration:12s]" />
+        <span>Cape Weligama</span>
+      </button>
+
+      {/* Sleek Minimalist Luxury Layer Switcher (Bottom-Left with Apple Bouncy Press) */}
       <div className="absolute bottom-20 left-3 sm:bottom-6 sm:left-6 z-[400] flex bg-white/95 sm:bg-white/90 backdrop-blur-md rounded-full p-1 border border-[#E5E4E0] shadow-md sm:shadow-sm">
         <button
           type="button"
           onClick={() => setMapStyle('street')}
-          className={`px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-medium rounded-full transition-all active:scale-95 ${
+          className={`apple-bounce px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-medium rounded-full transition-all active:scale-90 ${
             mapStyle === 'street' 
               ? 'bg-[#1A1A1A] text-white shadow-xs' 
               : 'text-[#706E6B] hover:text-[#1A1A1A]'
@@ -198,7 +228,7 @@ export default function ConciergeMap() {
         <button
           type="button"
           onClick={() => setMapStyle('satellite')}
-          className={`px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-medium rounded-full transition-all active:scale-95 ${
+          className={`apple-bounce px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-medium rounded-full transition-all active:scale-90 ${
             mapStyle === 'satellite' 
               ? 'bg-[#1A1A1A] text-white shadow-xs' 
               : 'text-[#706E6B] hover:text-[#1A1A1A]'
@@ -236,13 +266,22 @@ export default function ConciergeMap() {
           />
         )}
 
-        <MapViewController selectedSpot={selectedSpot} />
+        <MapViewController
+          selectedSpot={selectedSpot}
+          recenterTrigger={recenterTrigger}
+          centerPosition={centerPosition}
+        />
 
         {/* Living "YOU ARE HERE" Hotel Beacon */}
         <Marker
           position={[hotelLat, hotelLng]}
           icon={hotelBeaconIcon}
           zIndexOffset={1000}
+          eventHandlers={{
+            click: () => {
+              setRecenterTrigger((p) => p + 1);
+            },
+          }}
         />
 
         {/* Vibrant Luxury Curated Vendor Markers */}

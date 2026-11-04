@@ -68,9 +68,9 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setDomain('resort')}
-              className={`flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 rounded-full text-[10.5px] sm:text-[11px] font-semibold tracking-wide transition-all duration-200 whitespace-nowrap active:scale-95 ${
+              className={`apple-bounce flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 rounded-full text-[10.5px] sm:text-[11px] font-semibold tracking-wide transition-all duration-300 whitespace-nowrap active:scale-[0.88] cursor-pointer ${
                 domain === 'resort'
-                  ? 'bg-stone-900 text-white shadow-sm'
+                  ? 'bg-stone-900 text-white shadow-sm scale-[1.02]'
                   : 'text-stone-500 hover:text-stone-800'
               }`}
             >
@@ -82,9 +82,9 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setDomain('coast')}
-              className={`flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 rounded-full text-[10.5px] sm:text-[11px] font-semibold tracking-wide transition-all duration-200 whitespace-nowrap active:scale-95 ${
+              className={`apple-bounce flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 rounded-full text-[10.5px] sm:text-[11px] font-semibold tracking-wide transition-all duration-300 whitespace-nowrap active:scale-[0.88] cursor-pointer ${
                 domain === 'coast'
-                  ? 'bg-stone-900 text-white shadow-sm'
+                  ? 'bg-stone-900 text-white shadow-sm scale-[1.02]'
                   : 'text-stone-500 hover:text-stone-800'
               }`}
             >

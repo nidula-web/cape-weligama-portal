@@ -139,12 +139,12 @@ export default function ListView() {
                 </div>
               </div>
 
-              {/* CTAs */}
+              {/* CTAs with Apple Spring Touch */}
               <div className="mt-5 pt-4 border-t border-[#F0EFEA] flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => bookViaWhatsApp(spot)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-[#1E3A2B] text-white hover:bg-[#14291e] active:scale-[0.98] text-xs font-medium tracking-wide shadow-xs transition-all"
+                  className="apple-bounce flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-[#1E3A2B] text-white hover:bg-[#14291e] active:scale-[0.92] text-xs font-medium tracking-wide shadow-xs transition-all cursor-pointer"
                 >
                   <MessageCircle className="w-3.5 h-3.5 fill-white" />
                   <span>Book via WhatsApp</span>
@@ -155,7 +155,7 @@ export default function ListView() {
                   href={getDirectionsUrl(spot)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center p-2.5 rounded-full border border-[#E5E4E0] bg-white text-[#1A1A1A] hover:bg-[#F5F4F0] active:scale-[0.98] transition-colors"
+                  className="apple-bounce flex items-center justify-center p-2.5 rounded-full border border-[#E5E4E0] bg-white text-[#1A1A1A] hover:bg-[#F5F4F0] active:scale-[0.90] transition-all cursor-pointer"
                   title="Open in Google Maps"
                 >
                   <Navigation className="w-3.5 h-3.5 text-[#706E6B]" />

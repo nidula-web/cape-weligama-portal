@@ -43,13 +43,13 @@ export default function BottomSheet() {
         onClick={() => setSelectedSpot(null)}
       />
 
-      {/* Sheet Container: Drawer on Mobile, Centered/Floating Modal on Desktop */}
+      {/* Sheet Container: Drawer on Mobile, Centered/Floating Modal on Desktop with Apple Bouncy Spring */}
       <div
         ref={sheetRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="spot-title"
-        className="fixed z-50 bottom-0 left-0 right-0 max-h-[88dvh] sm:max-h-[85vh] md:bottom-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-xl bg-[#FAFAF8] rounded-t-3xl md:rounded-2xl shadow-2xl border border-[#E5E4E0] overflow-hidden flex flex-col animate-in slide-in-from-bottom duration-300"
+        className="fixed z-50 bottom-0 left-0 right-0 max-h-[88dvh] sm:max-h-[85vh] md:bottom-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-xl bg-[#FAFAF8] rounded-t-3xl md:rounded-2xl shadow-[0_-12px_40px_rgba(0,0,0,0.3)] md:shadow-2xl border border-[#E5E4E0] overflow-hidden flex flex-col ios-spring-sheet"
       >
         {/* Mobile Drag Indicator Bar */}
         <div
@@ -184,11 +184,11 @@ export default function BottomSheet() {
         <div className="p-4 sm:p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] bg-white border-t border-[#E5E4E0] shadow-md flex flex-col gap-3">
           
           <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
-            {/* Primary CTA: Book via WhatsApp or Custom Resort Action */}
+            {/* Primary CTA: Book via WhatsApp with Apple Bounce */}
             <button
               type="button"
               onClick={() => bookViaWhatsApp(selectedSpot)}
-              className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#1E3A2B] text-white hover:bg-[#14291e] active:scale-[0.99] font-medium text-xs sm:text-sm tracking-wide shadow-sm transition-all duration-150"
+              className="apple-bounce flex-1 flex items-center justify-center gap-2 px-5 py-3.5 sm:py-3 rounded-full bg-[#1E3A2B] text-white hover:bg-[#14291e] active:scale-[0.92] font-medium text-xs sm:text-sm tracking-wide shadow-sm transition-all duration-200 cursor-pointer"
             >
               <MessageCircle className="w-4 h-4 fill-white" />
               <span>{selectedSpot.actionLabel || 'Book via WhatsApp'}</span>
@@ -201,7 +201,7 @@ export default function BottomSheet() {
                 href={getDirectionsUrl(selectedSpot)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex sm:flex-none items-center justify-center gap-2 px-5 py-3 rounded-full border border-[#E5E4E0] bg-[#FAFAF8] text-[#1A1A1A] hover:bg-[#F0EFEA] hover:border-[#D1CFCA] active:scale-[0.99] font-medium text-xs sm:text-sm tracking-wide transition-all duration-150"
+                className="apple-bounce flex sm:flex-none items-center justify-center gap-2 px-5 py-3.5 sm:py-3 rounded-full border border-[#E5E4E0] bg-[#FAFAF8] text-[#1A1A1A] hover:bg-[#F0EFEA] hover:border-[#D1CFCA] active:scale-[0.92] font-medium text-xs sm:text-sm tracking-wide transition-all duration-200 cursor-pointer"
               >
                 <Navigation className="w-4 h-4 text-[#706E6B]" />
                 <span>Directions</span>
@@ -210,7 +210,7 @@ export default function BottomSheet() {
               <button
                 type="button"
                 onClick={() => setSelectedSpot(null)}
-                className="flex sm:flex-none items-center justify-center gap-2 px-5 py-3 rounded-full border border-[#E5E4E0] bg-[#FAFAF8] text-[#1A1A1A] hover:bg-[#F0EFEA] hover:border-[#D1CFCA] active:scale-[0.99] font-medium text-xs sm:text-sm tracking-wide transition-all duration-150"
+                className="apple-bounce flex sm:flex-none items-center justify-center gap-2 px-5 py-3.5 sm:py-3 rounded-full border border-[#E5E4E0] bg-[#FAFAF8] text-[#1A1A1A] hover:bg-[#F0EFEA] hover:border-[#D1CFCA] active:scale-[0.92] font-medium text-xs sm:text-sm tracking-wide transition-all duration-200 cursor-pointer"
               >
                 <span>Close</span>
               </button>
