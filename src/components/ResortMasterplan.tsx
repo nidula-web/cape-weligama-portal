@@ -341,9 +341,16 @@ export default function ResortMasterplan() {
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const toastTimer = useRef<NodeJS.Timeout | null>(null);
 
-  // Admin gate: ?admin=true
+  // Admin gate: ?admin=true or ?edit=pins
   const searchParams = useSearchParams();
-  const isAdmin = searchParams?.get('admin') === 'true';
+  const isAdmin = searchParams?.get('admin') === 'true' || searchParams?.get('edit') === 'pins';
+
+  // Automatically open the editor panel if admin view is detected
+  useEffect(() => {
+    if (isAdmin) {
+      setIsEditorOpen(true);
+    }
+  }, [isAdmin]);
 
   /* ── Load saved pin coords from localStorage ─────────────────────────── */
   useEffect(() => {
@@ -477,7 +484,7 @@ export default function ResortMasterplan() {
           title="Toggle Pin Editor (Hotkey: E)"
         >
           <Edit3 className="w-3.5 h-3.5" />
-          <span>{isEditorOpen ? 'Exit' : '🎯 Pins'}</span>
+          <span>{isEditorOpen ? 'Exit Editor' : '🎯 Pin Editor'}</span>
         </button>
       )}
 
@@ -492,7 +499,16 @@ export default function ResortMasterplan() {
                 PIN PLACEMENT EDITOR
               </span>
             </div>
-            <span className="text-[10px] text-stone-400 font-mono">18 pins</span>
+            <div className="flex items-center gap-2">
+              <a
+                href="/admin"
+                className="text-[10px] text-amber-400 hover:text-amber-300 font-semibold underline"
+                title="Return to Manager Portal"
+              >
+                GM Portal
+              </a>
+              <span className="text-[10px] text-stone-500 font-mono">· 18 pins</span>
+            </div>
           </div>
 
           <p className="text-[11px] text-stone-300 leading-snug">

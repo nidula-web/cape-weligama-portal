@@ -28,13 +28,30 @@ const ResortMasterplan = dynamic(() => import('@/components/ResortMasterplan'), 
   ),
 });
 
-// Reads the ?hotel= URL param and locks the guest mode accordingly
-function SearchParamsHandler() {
+// Reads URL params (?hotel=, ?domain=, ?admin=)
+function SearchParamsHandler({
+  setDomain,
+  setIsAdminMode,
+}: {
+  setDomain: React.Dispatch<React.SetStateAction<Domain>>;
+  setIsAdminMode: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const searchParams = useSearchParams();
   const { lockPropertyFromParam } = useConcierge();
+
   useEffect(() => {
     lockPropertyFromParam(searchParams.get('hotel'));
-  }, [searchParams, lockPropertyFromParam]);
+    const adminParam = searchParams.get('admin') === 'true' || searchParams.get('edit') === 'pins';
+    setIsAdminMode(adminParam);
+
+    const d = searchParams.get('domain');
+    if (d === 'resort' || d === 'coast') {
+      setDomain(d);
+    } else if (adminParam) {
+      setDomain('resort');
+    }
+  }, [searchParams, lockPropertyFromParam, setDomain, setIsAdminMode]);
+
   return null;
 }
 
@@ -43,6 +60,7 @@ type Domain = 'resort' | 'coast';
 export default function Home() {
   const { viewMode } = useConcierge();
   const [domain, setDomain] = useState<Domain>('resort');
+  const [isAdminMode, setIsAdminMode] = useState<boolean>(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -55,8 +73,24 @@ export default function Home() {
 
       {/* URL param sync */}
       <Suspense fallback={null}>
-        <SearchParamsHandler />
+        <SearchParamsHandler setDomain={setDomain} setIsAdminMode={setIsAdminMode} />
       </Suspense>
+
+      {/* Admin Mode Quick Bar (when ?admin=true is active) */}
+      {isAdminMode && (
+        <div className="bg-amber-500 text-stone-950 px-3 py-1.5 text-xs font-semibold flex items-center justify-between z-50 shadow-sm border-b border-amber-600">
+          <div className="flex items-center gap-2 truncate">
+            <span className="w-2 h-2 rounded-full bg-stone-950 animate-ping shrink-0" />
+            <span className="truncate">ADMIN MODE ACTIVE: Resort Masterplan Pin Calibration</span>
+          </div>
+          <a
+            href="/admin"
+            className="shrink-0 bg-stone-950 text-white px-2.5 py-0.5 rounded-full text-[10.5px] font-bold hover:bg-stone-800 transition-all ml-2"
+          >
+            ← Back to GM Portal
+          </a>
+        </div>
+      )}
 
       {/* ── Top Navbar ───────────────────────────────────────────────── */}
       <Navbar />

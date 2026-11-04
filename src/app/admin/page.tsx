@@ -225,6 +225,17 @@ function AdminContent() {
             </div>
 
             <div className="flex items-center gap-2 sm:gap-3">
+
+              {/* Resort Pin Editor Button */}
+              <Link
+                href="/?admin=true&domain=resort"
+                className="flex items-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-full border border-amber-300 bg-amber-50 hover:bg-amber-100 active:scale-[0.98] text-amber-950 text-xs font-semibold uppercase tracking-wider transition-all shadow-xs"
+                title="Open Interactive Resort Masterplan Pin Editor"
+              >
+                <MapPin className="w-3.5 h-3.5 text-amber-600" />
+                <span className="hidden sm:inline">Resort Pin Editor</span>
+                <span className="sm:hidden">Pins</span>
+              </Link>
               
               {/* Generate QR Code Button */}
               <button
@@ -379,6 +390,35 @@ function AdminContent() {
             </div>
           </div>
 
+        </section>
+
+        {/* Resort Masterplan Pin Placement & Calibration Section */}
+        <section className="bg-gradient-to-r from-stone-900 via-stone-950 to-stone-900 text-white rounded-2xl border border-stone-800 p-6 sm:p-7 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-2xl">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
+              <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-amber-400">
+                Masterplan Calibration
+              </span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-serif font-semibold text-white">
+              Resort Grounds Pin Editor (18 Numbered Pavilions)
+            </h2>
+            <p className="text-xs sm:text-sm text-stone-300 font-light leading-relaxed">
+              Place, drag, or recalibrate all 18 numbered pins on the Cape Weligama masterplan illustration (Reception, Spa, Moon Pool, Cape Club, Beach Access, Lookouts, and Villas). Click anywhere on the map to place pins with pixel precision and export configuration JSON.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row items-stretch sm:items-center gap-3 shrink-0">
+            <Link
+              href="/?admin=true&domain=resort"
+              className="apple-bounce flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs tracking-wide shadow-lg transition-all active:scale-95"
+            >
+              <MapPin className="w-4 h-4 text-stone-950" />
+              <span>Launch Pin Editor</span>
+              <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+            </Link>
+          </div>
         </section>
 
         {/* Spots Management Table Section */}
